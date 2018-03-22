@@ -22,7 +22,7 @@ import VideoStream
 IM_WIDTH = 1920
 IM_HEIGHT = 1080
 
-FRAME_RATE = 30
+FRAME_RATE = 10
 
 ## Initialize calculated frame rate because it's calculated AFTER the first time it's displayed
 frame_rate_calc = 1
@@ -36,7 +36,7 @@ font = cv2.FONT_HERSHEY_SIMPLEX
 # See VideoStream.py for VideoStream class definition
 ## IF USING USB CAMERA INSTEAD OF PICAMERA,
 ## CHANGE THE THIRD ARGUMENT FROM 1 TO 2 IN THE FOLLOWING LINE:
-videostream = VideoStream.VideoStream((IM_WIDTH,IM_HEIGHT),FRAME_RATE,2,0).start()
+videostream = VideoStream.VideoStream((IM_WIDTH,IM_HEIGHT),FRAME_RATE,2,2).start()
 time.sleep(1) # Give the camera time to warm up
 
 # Load the train rank and suit images
@@ -68,6 +68,7 @@ while cam_quit == 0:
     # Find and sort the contours of all cards in the image (query cards)
     cnts_sort, cnt_is_card = Cards.find_cards(pre_proc, pre_proc_white)
 
+    annotatedImage = image.copy()
     # If there are no contours, do nothing
     if len(cnts_sort) != 0:
 
@@ -91,7 +92,7 @@ while cam_quit == 0:
                 cards[k].best_rank_match,cards[k].rank_diff = Cards.match_card(cards[k],train_ranks)
 
                 # Draw center point and match result on the image.
-                image = Cards.draw_results(image, cards[k])
+                annotatedImage = Cards.draw_results(annotatedImage, cards[k])
                 k = k + 1
         # Draw card contours on image (have to do contours all at once or
         # they do not show up properly for some reason)
@@ -99,16 +100,16 @@ while cam_quit == 0:
             temp_cnts = []
             for i in range(len(cards)):
                 temp_cnts.append(cards[i].contour)
-            cv2.drawContours(image,temp_cnts, -1, (255,0,0), 2)
+            cv2.drawContours(annotatedImage,temp_cnts, -1, (255,0,0), 2)
             cv2.imshow("warp", cards[0].warp)
 
 
     # Draw framerate in the corner of the image. Framerate is calculated at the end of the main loop,
     # so the first time this runs, framerate will be shown as 0.
-    cv2.putText(image,"FPS: "+str(int(frame_rate_calc)),(10,26),font,0.7,(255,0,255),2,cv2.LINE_AA)
+    cv2.putText(annotatedImage,"FPS: "+str(int(frame_rate_calc)),(10,26),font,0.7,(255,0,255),2,cv2.LINE_AA)
 
     # Finally, display the image with the identified cards!
-    cv2.imshow("Card Detectors",image)
+    cv2.imshow("Card Detectors", annotatedImage)
 
     # Calculate framerate
     t2 = cv2.getTickCount()

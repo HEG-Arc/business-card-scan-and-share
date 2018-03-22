@@ -1,13 +1,22 @@
+# SCAN Business Cards and Share
+
+python scan
+Web animations for touchscreen
+connected via rabbitmq/STOMP
+
+
+
+
 This is a version of OpenCV-Playing-Card-Detector adjusted for recognition of Magic The Gathering cards. It wasn't tested on Raspberry Pi, only PC.
 
 capture image:
-- place the card on the black background 
+- place the card on the black background
 - once the camera is ready point it towards the card, try to catch only the card and white background, nothing else
 - when the program captures the image of the card it will appear next to the video feed
 - now you can save the image (use right click and "save as ..." for now)
 
 recognize image:
-- place the card on the black background 
+- place the card on the black background
 - once the camera is ready point it towards the card, try to catch only the card and white background, nothing else
 - keep your camera steady as the progam tries the identify the card, the name of the closes match is shown on the right image, on the top of the card.
 

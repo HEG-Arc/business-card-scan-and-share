@@ -65,7 +65,7 @@ def load_ranks(filepath):
     train_ranks = []
     i = 0
 
-    for Rank in ['pmi', 'mobiliere', 'inmarsat']:
+    for Rank in ['pmi', 'mobiliere', 'inmarsat', 'jura']:
 
         train_ranks.append(Train_ranks())
         train_ranks[i].name = Rank
