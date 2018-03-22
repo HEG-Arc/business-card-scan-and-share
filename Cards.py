@@ -2,7 +2,7 @@
 #
 # Author: Evan Juras
 # Date: 9/5/17
-# Description: Functions and classes for CardDetector.py that perform 
+# Description: Functions and classes for CardDetector.py that perform
 # various steps of the card detection algorithm
 
 
@@ -10,6 +10,7 @@
 import numpy as np
 import cv2
 import time
+import os
 
 ### Constants ###
 
@@ -25,10 +26,10 @@ CORNER_HEIGHT = 570
 RANK_WIDTH = 400
 RANK_HEIGHT = 580
 
-RANK_DIFF_MAX = 60000
+RANK_DIFF_MAX = 130000
 
-CARD_MAX_AREA = 300000
-CARD_MIN_AREA = 60000
+CARD_MAX_AREA = 3000000
+CARD_MIN_AREA = 200000
 
 font = cv2.FONT_HERSHEY_SIMPLEX
 
@@ -63,25 +64,13 @@ def load_ranks(filepath):
 
     train_ranks = []
     i = 0
-    
-    for Rank in ['reito_lantern','ornate_kanzashi', 'free_from_the_real', 
-              'sakura_tribe_scout', 'plains_ben_thomposon', 'path_of_angers_flame', 
-              'sift_through_sands', 'setons_desire', 'phantom_nomad', 
-              'divine_light', 'ghostly_wings', 'plains_fred_fields', 'locust_mister',
-              'jugan_the_rising_star', 'whispering_shade', 'divergent_growth', 
-              'ryusei_the_falling_star', 'dripping_tongue_zubera',
-              'ninja_of_the _deep_hours', 'plains_matthew_mitchell', 'plains_greg_staples',
-              'forest_quinton_hoover', 'forest_john_avon', 'ghost_lit_refeemer', 
-              'kabuto_moth', 'kami_of_false_home', 'waxmane_baku', 'kami_of_tattered_shoji',
-              'ethereal_haze', 'joyous_respite', 'orochi_sustainer', 'orochi_ranger',
-              'commune_with_nature', 'petalmane_baku', 'scaled_hulk', 'harbinger_of_spring',
-              'traproot_kami', 'rending_vines', 'vital_surge', 'torrent_of_stone',
-              'descendant_of_soramaro', 'wandering_ones', 'orochi_sustainer', 'field_of_reality']:
-        
+
+    for Rank in ['pmi', 'mobiliere', 'inmarsat']:
+
         train_ranks.append(Train_ranks())
         train_ranks[i].name = Rank
         filename = Rank + '.jpg'
-        train_ranks[i].img = cv2.imread(filepath+filename, cv2.IMREAD_GRAYSCALE)
+        train_ranks[i].img = cv2.imread(os.path.join(filepath, filename), cv2.IMREAD_GRAYSCALE)
         i = i + 1
 
     return train_ranks
@@ -105,20 +94,21 @@ def preprocess_image(image):
     img_w, img_h = np.shape(image)[:2]
     bkg_level = gray[int(img_h/25)][int(img_w/2)]
     thresh_level = bkg_level + BKG_THRESH
-    
+
     # try this for white border card
 #    thresh_level = 100
     #
 
     retval, thresh = cv2.threshold(blur,thresh_level,255,cv2.THRESH_BINARY)
-    
+
+
     return thresh
 
 def preprocess_white_image(image):
     """Returns a grayed, blurred, and adaptively thresholded camera image."""
     gray = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray,(5,5),0)
-    
+
     img_w, img_h = np.shape(image)[:2]
     bkg_level = gray[int(img_h/25)][int(img_w/2)]
     thresh_level = bkg_level + BKG_THRESH
@@ -126,7 +116,7 @@ def preprocess_white_image(image):
 #    if thresh_level < 100:
     thresh_level = 110
     retval, thresh = cv2.threshold(blur,thresh_level,255,cv2.THRESH_BINARY)
-    
+
     return thresh
 
 def find_cards(thresh_image, thresh_image_white):
@@ -138,10 +128,8 @@ def find_cards(thresh_image, thresh_image_white):
     dummy,cnts_wht,hier_wht = cv2.findContours(thresh_image_white,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
 
     index_sort = sorted(range(len(cnts)), key=lambda i : cv2.contourArea(cnts[i]),reverse=True)
-    index_sort = [x for x in index_sort if cv2.contourArea(cnts[x]) > 50000]
-    
+
     index_sort_wht = sorted(range(len(cnts_wht)), key=lambda i : cv2.contourArea(cnts_wht[i]),reverse=True)
-    index_sort_wht = [x for x in index_sort_wht if cv2.contourArea(cnts_wht[x]) > 50000]
 
     # If there are no contours, do nothing
     if len(cnts) == 0 and len(cnts_wht) == 0:
@@ -152,7 +140,7 @@ def find_cards(thresh_image, thresh_image_white):
         cnts = cnts_wht
         hier = hier_wht
         index_sort = index_sort_wht
-    
+
     # Otherwise, initialize empty sorted contour and hierarchy lists
     cnts_sort = []
     hier_sort = []
@@ -173,7 +161,8 @@ def find_cards(thresh_image, thresh_image_white):
     for i in range(len(cnts_sort)):
         size = cv2.contourArea(cnts_sort[i])
         peri = cv2.arcLength(cnts_sort[i],True)
-        approx = cv2.approxPolyDP(cnts_sort[i],0.01*peri,True)
+        epsilon = 0.01 * peri
+        approx = cv2.approxPolyDP(cnts_sort[i], epsilon, True)
 
         if ((size < CARD_MAX_AREA) and (size > CARD_MIN_AREA)
             and (hier_sort[i][3] == -1) and (len(approx) == 4)):
@@ -217,19 +206,19 @@ def preprocess_card(contour, image):
     qCard.center = [cent_x, cent_y]
 
     # Warp card into 200x300 flattened image using perspective transform
-    qCard.warp = flattener(image, pts, w, h)
+    qCard.warp =  flattener(image, pts, h, w)
 
     # Find rank contour and bounding rectangle, isolate and find largest contour
-    dummy, qCard_cnts, hier = cv2.findContours(qCard.warp, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-    qCard_cnts = sorted(qCard_cnts, key=cv2.contourArea,reverse=True)
+    #dummy, qCard_cnts, hier = cv2.findContours(qCard.warp, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+    #qCard_cnts = sorted(qCard_cnts, key=cv2.contourArea,reverse=True)
 
     # Find bounding rectangle for largest contour, use it to resize query rank
     # image to match dimensions of the train rank image
-    if len(qCard_cnts) != 0:
-        x1,y1,w1,h1 = cv2.boundingRect(qCard_cnts[0])
-        qCard_roi = qCard.warp[y1:y1+h1, x1:x1+w1]
-        qCard_sized = cv2.resize(qCard_roi, (RANK_WIDTH,RANK_HEIGHT), 0, 0)
-        qCard.rank_img = qCard_sized
+    #if len(qCard_cnts) != 0:
+    #    x1,y1,w1,h1 = cv2.boundingRect(qCard_cnts[0])
+    #    qCard_roi = qCard.warp[y1:y1+h1, x1:x1+w1]
+    #    qCard_sized = cv2.resize(qCard_roi, (RANK_WIDTH,RANK_HEIGHT), 0, 0)
+    #    qCard.rank_img = qCard_sized
 
     return qCard
 
@@ -238,28 +227,27 @@ def match_card(qCard, train_ranks):
     the query card rank images with the train rank images.
     The best match is the rank image that has the least difference."""
 
-    best_rank_match_diff = 60000
+    best_rank_match_diff = RANK_DIFF_MAX
     best_rank_match_name = "Unknown"
     best_rank_name = None
 
     # If no contours were found in query card in preprocess_card function,
     # the img size is zero, so skip the differencing process
     # (card will be left as Unknown)
-    if (len(qCard.rank_img) != 0):
-        
-        # Difference the query card rank image from each of the train rank images,
-        # and store the result with the least difference
-        for Trank in train_ranks:
-            if Trank.img is None:
-                continue
-            
-            diff_img = cv2.absdiff(cv2.equalizeHist(qCard.rank_img), cv2.equalizeHist(Trank.img))
+    #if (len(qCard.rank_img) != 0):
 
-            rank_diff = int(np.sum(diff_img)/255)
-            print(rank_diff)
-            if rank_diff < best_rank_match_diff:
-                best_rank_match_diff = rank_diff
-                best_rank_name = Trank.name
+    # Difference the query card rank image from each of the train rank images,
+    # and store the result with the least difference
+    for Trank in train_ranks:
+        if Trank.img is None:
+            continue
+
+        diff_img = cv2.absdiff(cv2.equalizeHist(qCard.warp), cv2.equalizeHist(Trank.img))
+
+        rank_diff = int(np.sum(diff_img)/255)
+        if rank_diff < best_rank_match_diff:
+            best_rank_match_diff = rank_diff
+            best_rank_name = Trank.name
 
     # Combine best rank match and best suit match to get query card's identity.
     # If the best matches have too high of a difference value, card identity
@@ -269,8 +257,8 @@ def match_card(qCard, train_ranks):
 
     # Return the identiy of the card and the quality of the suit and rank match
     return best_rank_match_name, best_rank_match_diff
-    
-    
+
+
 def draw_results(image, qCard):
     """Draw the card name, center point, and contour on the camera image."""
 
@@ -283,11 +271,11 @@ def draw_results(image, qCard):
     # Draw card name twice, so letters have black outline
     cv2.putText(image,(rank_name),(x-60,y-10),font,1,(0,0,0),3,cv2.LINE_AA)
     cv2.putText(image,(rank_name),(x-60,y-10),font,1,(50,200,200),2,cv2.LINE_AA)
-    
+
     # Can draw difference value for troubleshooting purposes
     # (commented out during normal operation)
-    #r_diff = str(qCard.rank_diff)
-    #cv2.putText(image,r_diff,(x+20,y+30),font,0.5,(0,0,255),1,cv2.LINE_AA)
+    debug = "size %s, diff %s" % (cv2.contourArea(qCard.contour), qCard.rank_diff)
+    cv2.putText(image,debug,(x+20,y+30),font,0.5,(0,0,255),1,cv2.LINE_AA)
 
     return image
 
@@ -296,7 +284,7 @@ def flattener(image, pts, w, h):
     Returns the flattened, re-sized, grayed image.
     See www.pyimagesearch.com/2014/08/25/4-point-opencv-getperspective-transform-example/"""
     temp_rect = np.zeros((4,2), dtype = "float32")
-    
+
     s = np.sum(pts, axis = 2)
 
     tl = pts[np.argmin(s)]
@@ -325,7 +313,7 @@ def flattener(image, pts, w, h):
     # If the card is 'diamond' oriented, a different algorithm
     # has to be used to identify which point is top left, top right
     # bottom left, and bottom right.
-    
+
     if w > 0.8*h and w < 1.2*h: #If card is diamond oriented
         # If furthest left point is higher than furthest right point,
         # card is tilted to the left.
@@ -346,10 +334,9 @@ def flattener(image, pts, w, h):
             temp_rect[1] = pts[3][0] # Top right
             temp_rect[2] = pts[2][0] # Bottom right
             temp_rect[3] = pts[1][0] # Bottom left
-            
-        
-    maxWidth = 600
-    maxHeight = 900
+
+    maxWidth = 850
+    maxHeight = 550
 
     # Create destination array, calculate perspective transform matrix,
     # and warp card image

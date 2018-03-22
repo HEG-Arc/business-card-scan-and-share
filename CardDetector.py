@@ -19,10 +19,10 @@ import VideoStream
 # Define constants and initialize variables
 
 ## Camera settings
-IM_WIDTH = 800
-IM_HEIGHT = 600 
+IM_WIDTH = 1920
+IM_HEIGHT = 1080
 
-FRAME_RATE = 10
+FRAME_RATE = 30
 
 ## Initialize calculated frame rate because it's calculated AFTER the first time it's displayed
 frame_rate_calc = 1
@@ -32,7 +32,7 @@ freq = cv2.getTickFrequency()
 font = cv2.FONT_HERSHEY_SIMPLEX
 
 # Initialize camera object and video feed from the camera. The video stream is set up
-# as a seperate thread that constantly grabs frames from the camera feed. 
+# as a seperate thread that constantly grabs frames from the camera feed.
 # See VideoStream.py for VideoStream class definition
 ## IF USING USB CAMERA INSTEAD OF PICAMERA,
 ## CHANGE THE THIRD ARGUMENT FROM 1 TO 2 IN THE FOLLOWING LINE:
@@ -41,7 +41,8 @@ time.sleep(1) # Give the camera time to warm up
 
 # Load the train rank and suit images
 path = os.path.dirname(os.path.abspath(__file__))
-train_ranks = Cards.load_ranks( path + '/Card_Imgs/')
+img_dir = 'Card_Imgs'
+train_ranks = Cards.load_ranks(os.path.join(path, img_dir))
 
 ### ---- MAIN LOOP ---- ###
 # The main loop repeatedly grabs frames from the video stream
@@ -61,7 +62,9 @@ while cam_quit == 0:
     # Pre-process camera image (gray, blur, and threshold it)
     pre_proc = Cards.preprocess_image(image)
     pre_proc_white = Cards.preprocess_white_image(image)
-	
+    cv2.imshow("pre_proc",pre_proc)
+    cv2.imshow("pre_proc_white",pre_proc_white)
+
     # Find and sort the contours of all cards in the image (query cards)
     cnts_sort, cnt_is_card = Cards.find_cards(pre_proc, pre_proc_white)
 
@@ -97,12 +100,13 @@ while cam_quit == 0:
             for i in range(len(cards)):
                 temp_cnts.append(cards[i].contour)
             cv2.drawContours(image,temp_cnts, -1, (255,0,0), 2)
-        
-        
+            cv2.imshow("warp", cards[0].warp)
+
+
     # Draw framerate in the corner of the image. Framerate is calculated at the end of the main loop,
     # so the first time this runs, framerate will be shown as 0.
     cv2.putText(image,"FPS: "+str(int(frame_rate_calc)),(10,26),font,0.7,(255,0,255),2,cv2.LINE_AA)
-#    print(len(image))
+
     # Finally, display the image with the identified cards!
     cv2.imshow("Card Detectors",image)
 
@@ -110,12 +114,14 @@ while cam_quit == 0:
     t2 = cv2.getTickCount()
     time1 = (t2-t1)/freq
     frame_rate_calc = 1/time1
-    
+
     # Poll the keyboard. If 'q' is pressed, exit the main loop.
     key = cv2.waitKey(1) & 0xFF
     if key == ord("q"):
         cam_quit = 1
-        
+    if key == ord("s"):
+        cv2.imwrite(os.path.join(path, img_dir, "last.jpg"), cards[0].warp)
+
 
 # Close all windows and close the PiCamera video stream.
 cv2.destroyAllWindows()
