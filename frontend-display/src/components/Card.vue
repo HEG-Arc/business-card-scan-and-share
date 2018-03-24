@@ -90,8 +90,8 @@ export default {
   position: absolute;
   border: 2px solid red;
   color: white;
-  width: 170px;
-  height: 110px;
+  width: 255px;
+  height: 165px;
   z-index: 10;
   -webkit-animation-duration: 1s;
   animation-duration: 1s;

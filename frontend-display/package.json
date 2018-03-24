@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "interactjs": "^1.3.3",
+    "particles.js": "^2.0.0",
     "stompjs": "^2.3.3",
     "vue": "^2.5.13"
   },

@@ -45,8 +45,8 @@ export default {
 .gate {
   border: 2px solid blue;
   position: absolute;
-  width: 200px;
-  height: 200px;
+  width: 255px;
+  height: 165px;
   bottom: 0;
   left: 0;
 }
