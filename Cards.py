@@ -12,6 +12,9 @@ import cv2
 import time
 import os
 
+from PIL import Image
+import pytesseract
+
 from firebase_admin import firestore
 from Config import config
 ### Constants ###
@@ -34,6 +37,7 @@ class Query_card:
     """Structure to store information about query cards in the camera image."""
 
     def __init__(self):
+        self.id = "" # remote id
         self.contour = []  # Contour of card
         self.width, self.height = 0, 0  # Width and height of card
         self.corner_pts = []  # Corner points of card
@@ -63,7 +67,7 @@ def load_ranks(filepath):
     train_ranks = []
     i = 0
 
-    for Rank in ['pmi', 'mobiliere', 'inmarsat', 'jura', 'creapole']:
+    for Rank in []:
 
         train_ranks.append(Train_ranks())
         train_ranks[i].name = Rank
@@ -182,6 +186,11 @@ def preprocess_card(contour, image):
 
     return qCard
 
+
+def ocr_card(qCard):
+    txt = pytesseract.image_to_string(qCard.warpMatch, lang="fra+eng", config="--psm 11")
+    print(txt)
+    return txt
 
 def match_card(qCard, train_ranks):
     """Finds best rank matches for the query card. Differences
