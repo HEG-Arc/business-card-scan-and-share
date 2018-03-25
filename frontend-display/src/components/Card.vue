@@ -1,8 +1,7 @@
 <template>
   <div :class="'card ' + animation"
-   :style="{left: `${left}%`, top: `${top}%`, transform}">
-    <p>{{card.debug}}</p>
-    <img :src="'/cards/' + card.id + '.jpg'">
+   :style="{left: `${left}%`, top: `${top}%`, transform, 'background-image': 'url(https://firebasestorage.googleapis.com/v0/b/firebase-ptw.appspot.com/o/business-card-app%2Fcards%2F' + card.id + '.jpg?alt=media)'}">
+    <p>{{card}} {{card.id}}</p>
   </div>
 </template>
 
@@ -51,12 +50,13 @@ export default {
             parseFloat(this.x) / this.$el.parentElement.offsetWidth * 100;
           this.top =
             parseFloat(this.y) / this.$el.parentElement.offsetHeight * 100;
-          // this.moveToTop();
+          // TODO: this.moveToTop();
         },
         // call this function on every dragend event
         onend: event => {
           this.dragging = false;
           if (event.relatedTarget) {
+            // TODO: send MATCH to backend
             this.animation = "zoomOutDown";
             setTimeout(() => {
               this.animation = "zoomIn";
@@ -88,7 +88,9 @@ export default {
 <style>
 .card {
   position: absolute;
-  border: 2px solid red;
+  background-color: #fff;
+  background-repeat: no-repeat;
+  background-size: contain;
   color: white;
   width: 255px;
   height: 165px;
@@ -97,6 +99,7 @@ export default {
   animation-duration: 1s;
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
+  box-shadow: 0px 0px 25px rgba(59, 59, 59, 0.55)
 }
 
 .card img {

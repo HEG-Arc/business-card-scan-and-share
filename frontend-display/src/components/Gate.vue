@@ -49,6 +49,7 @@ export default {
   height: 165px;
   bottom: 0;
   left: 0;
+  background-color: #000;
 }
 .drop-target {
   background-color: #dcedc8 !important;

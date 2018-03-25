@@ -1,7 +1,8 @@
 <template>
   <div id="app">
     <div id="dnd" ref="dnd">
-      <h1>Title </h1>
+      <my-logo style="transform: rotate(180deg); top: 0; left: 0;"></my-logo>
+      <my-logo style="bottom: 0;right: 0;"></my-logo>
       <my-card v-for="card in cards" :key="card.id" :card="card"></my-card>
       <my-gate></my-gate>
     </div>
@@ -11,33 +12,19 @@
 <script>
 import Card from "@/components/Card";
 import Gate from "@/components/Gate";
-/*
-import Stomp from "stompjs";
-const client = Stomp.overWS("ws://localhost:15674");
-//disable unsupported heart-beat
-client.heartbeat.outgoing = 0;
-client.heartbeat.incoming = 0;
-client.debug = debug;
-client.connect('guest', 'guest', onConnect, failureConnect, '/');
-client.subscribe('/exchange/gestionair/simulation', (message) => {
-                    try {
-                        this.handleEvent(JSON.parse(message.body));
-                    } catch (e) {
-                        console.log('error', e);
-                        console.log(message.body);
-                    }
-                });
-  client.send("/queue/test", {priority: 9}, "Hello, STOMP");
-*/
+import Logo from "@/components/Logo";
+import { db, DB_APP_ROOT } from "@/main";
+
 export default {
   name: "app",
   data() {
     return {
-      cards: [
-        {
-          id: "pmi"
-        }
-      ]
+      cards: {}
+    };
+  },
+  firestore() {
+    return {
+      cards: db.collection(`${DB_APP_ROOT}/data/cards`)
     };
   },
   mounted() {
@@ -45,12 +32,15 @@ export default {
       const e2 = new Event("mousemove");
       e2.offsetX = e.clientX;
       e2.offsetY = e.clientY;
-      this.$refs.dnd.nextSibling.dispatchEvent(e2);
+      if (this.$refs.dnd.nextSibling) {
+        this.$refs.dnd.nextSibling.dispatchEvent(e2);
+      }
     };
   },
   components: {
     "my-card": Card,
-    "my-gate": Gate
+    "my-gate": Gate,
+    "my-logo": Logo
   }
 };
 </script>
@@ -72,7 +62,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: white;
-  background-color: #000;
+  background-color: #173160;
   width: 100%;
   height: 100%;
   touch-action: none;
@@ -81,6 +71,8 @@ body {
   width: 100%;
   height: 100%;
   padding: 3em;
+  position: absolute;
+  z-index: 1;
 }
 #app canvas {
   position: absolute;
