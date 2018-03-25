@@ -171,6 +171,9 @@ def preprocess_card(contour, image):
 
     # Warp card intoflattened image using perspective transform
     qCard.warp = flattener(image, pts, h, w)
+    if ("CROP" in config and config["CROP"] > 0):
+        crop = config["CROP"]
+        qCard.warp = qCard.warp[crop:-crop, crop:-crop]
     qCard.warpMatch = cv2.cvtColor(qCard.warp, cv2.COLOR_BGR2GRAY)
     # Estimate blur
     blur_map = cv2.Laplacian(qCard.warpMatch, cv2.CV_64F)
