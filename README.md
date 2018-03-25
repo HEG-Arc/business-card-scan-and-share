@@ -2,9 +2,53 @@
 
 python scan
 Web animations for touchscreen
-connected via rabbitmq/STOMP
+connected via firebase
 
 
+border detection
+-> if card
+    -> stable for x time
+        GATE.status == SCANNING
+    -> extract blur
+
+       -> if match
+          -> GATE.status == OPEN
+          -> GATE.activeCard == id
+       -> else
+          -> create new id
+          -> extract color
+            -> upload img
+                -> GATE.status == OPEN
+                -> GATE.activeCard == id
+                -> CARD.isUploaded
+            -> OCR
+                -> CARD.infos... == OCR.
+                -> CARD.isOCRed
+                    -> Welcome...
+                -> bridge to Odoo?
+if not CARD.isRegistered then -> please register at desk?
+-> off
+    -> GATE.status == CLOSED
+    -> GATE.activeCard == ''
+
+
+-> send card to card
+
+-> update/check email
+-> fix name
+-> Directory of participants
+-> sync from odoo? list all ?
+
+-> match linkedin
+
+
+-> movements?
+-> moveToTop
+
+
+pip install --upgrade firebase-admin
+
+----------------
 
 
 This is a version of OpenCV-Playing-Card-Detector adjusted for recognition of Magic The Gathering cards. It wasn't tested on Raspberry Pi, only PC.

@@ -22,8 +22,4 @@ Vue.use(VueFire);
 
 new Vue({
   render: h => h(App),
-  mounted() {
-    //eslint-disable-next-line
-    particlesJS.load('app', 'particles.json');
-  }
 }).$mount("#app");

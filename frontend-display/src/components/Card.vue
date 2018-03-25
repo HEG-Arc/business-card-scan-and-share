@@ -102,10 +102,6 @@ export default {
   box-shadow: 0px 0px 25px rgba(59, 59, 59, 0.55)
 }
 
-.card img {
-  width: 100%;
-}
-
 @keyframes zoomOutDown {
   40% {
     opacity: 1;

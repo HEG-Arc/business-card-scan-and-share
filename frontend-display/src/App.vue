@@ -4,7 +4,7 @@
       <my-logo style="transform: rotate(180deg); top: 0; left: 0;"></my-logo>
       <my-logo style="bottom: 0;right: 0;"></my-logo>
       <my-card v-for="card in cards" :key="card.id" :card="card"></my-card>
-      <my-gate></my-gate>
+      <my-gate v-for="gate in gates" :key="gate.id" :gate="gate"></my-gate>
     </div>
   </div>
 </template>
@@ -19,15 +19,19 @@ export default {
   name: "app",
   data() {
     return {
-      cards: {}
+      cards: [],
+      gates: []
     };
   },
   firestore() {
     return {
-      cards: db.collection(`${DB_APP_ROOT}/data/cards`)
+      cards: db.collection(`${DB_APP_ROOT}/data/cards`),
+      gates: db.collection(`${DB_APP_ROOT}/data/gates`)
     };
   },
   mounted() {
+    //eslint-disable-next-line
+    particlesJS.load('app', 'particles.json');
     this.$refs.dnd.onmousemove = (e) => {
       const e2 = new Event("mousemove");
       e2.offsetX = e.clientX;
@@ -56,6 +60,7 @@ body {
   margin: 0;
   padding: 0;
   touch-action: none;
+  overflow: hidden;
 }
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
