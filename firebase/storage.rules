@@ -1,0 +1,11 @@
+service firebase.storage {
+  match /b/firebase-ptw.appspot.com/o {
+  	match /business-card-app/cards/{allPaths=**} {
+      allow write: if request.auth != null;
+      allow read;
+    }
+    match /{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
