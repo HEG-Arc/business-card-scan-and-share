@@ -1,12 +1,22 @@
 <template>
   <div :class="'card ' + animation"
    :style="{left: `${left}%`, top: `${top}%`, transform, 'background-image': 'url(https://firebasestorage.googleapis.com/v0/b/firebase-ptw.appspot.com/o/business-card-app%2Fcards%2F' + card.id + '.jpg?alt=media)'}">
-    <p>{{card}} {{card.id}}</p>
+    <p>{{card.entities.map(e => `${e.name} {${e.type}\}`)}} </p>
+    <p>{{card.rawText}}</p>
+    <svg class="ocr-debug" viewBox="0 0 850 550">
+      <path v-for="d in card.detections" :d="d|toPath">
+        <title>{{d.description}}</title>
+      </path>
+    </svg>
   </div>
 </template>
 
 <script>
 import interact from "interactjs";
+// some regex
+// EMAIL \b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b
+// basic phones (.):?([\d +()]{7,18})
+// npa city \d{4} [^ \n]+
 
 export default {
   name: "Card",
@@ -81,6 +91,15 @@ export default {
       return `rotateZ(${this.angle}deg)`;
     }
   },
+  filters: {
+    toPath(d) {
+      return (
+        "M" +
+        d.boundingPoly.vertices.map(d => `${d.x} ${d.y}`).join(" L") +
+        " Z"
+      );
+    }
+  },
   methods: {}
 };
 </script>
@@ -91,7 +110,7 @@ export default {
   background-color: #fff;
   background-repeat: no-repeat;
   background-size: contain;
-  color: white;
+  color: green;
   width: 255px;
   height: 165px;
   z-index: 10;
@@ -99,7 +118,7 @@ export default {
   animation-duration: 1s;
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
-  box-shadow: 0px 0px 25px rgba(59, 59, 59, 0.55)
+  box-shadow: 0px 0px 25px rgba(59, 59, 59, 0.55);
 }
 
 @keyframes zoomOutDown {
@@ -119,6 +138,21 @@ export default {
 
 .zoomOutDown {
   animation-name: zoomOutDown;
+}
+
+.ocr-debug {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
+.ocr-debug path {
+  fill: none;
+  stroke: red;
+  stroke-width: 4;
 }
 
 @keyframes zoomIn {

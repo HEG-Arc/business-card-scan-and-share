@@ -5,32 +5,32 @@ Web animations for touchscreen
 connected via firebase
 
 
-border detection
+OK border detection
 -> if card
-    -> stable for x time
-        GATE.status == SCANNING
-    -> extract blur
+TODO    GATE.status == SCANNING
+OK    -> if bot blurry stable for x time
+
+      -> extract blur
 
        -> if match
           -> GATE.status == OPEN
           -> GATE.activeCard == id
        -> else
-          -> create new id
-          -> extract color
-            -> upload img
-                -> GATE.status == OPEN
+OK          -> create new id
+OK          -> extract color
+OK            -> upload img
+OK                -> GATE.status == OPEN
                 -> GATE.activeCard == id
                 -> CARD.isUploaded
-            -> OCR
+OK            -> OCR
                 -> CARD.infos... == OCR.
                 -> CARD.isOCRed
                     -> Welcome...
                 -> bridge to Odoo?
 if not CARD.isRegistered then -> please register at desk?
 -> off
-    -> GATE.status == CLOSED
+OK    -> GATE.status == CLOSED
     -> GATE.activeCard == ''
-
 
 -> send card to card
 
@@ -41,10 +41,8 @@ if not CARD.isRegistered then -> please register at desk?
 
 -> match linkedin
 
-
 -> movements?
--> moveToTop
-
+OK -> moveToTop
 
 pip install --upgrade firebase-admin
 
