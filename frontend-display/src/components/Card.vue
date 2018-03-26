@@ -50,7 +50,7 @@ export default {
             parseFloat(this.x) / this.$el.parentElement.offsetWidth * 100;
           this.top =
             parseFloat(this.y) / this.$el.parentElement.offsetHeight * 100;
-          // TODO: this.moveToTop();
+          this.$emit("dragstart");
         },
         // call this function on every dragend event
         onend: event => {

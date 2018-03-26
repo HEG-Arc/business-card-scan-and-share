@@ -3,7 +3,7 @@
     <div id="dnd" ref="dnd">
       <my-logo style="transform: rotate(180deg); top: 0; left: 0;"></my-logo>
       <my-logo style="bottom: 0;right: 0;"></my-logo>
-      <my-card v-for="card in cards" :key="card.id" :card="card"></my-card>
+      <my-card v-for="card in sortedCards" :key="card.id" :card="card" @dragstart="moveToTop(card)"></my-card>
       <my-gate v-for="gate in gates" :key="gate.id" :gate="gate"></my-gate>
     </div>
   </div>
@@ -20,6 +20,7 @@ export default {
   data() {
     return {
       cards: [],
+      sortedCards: [],
       gates: []
     };
   },
@@ -40,6 +41,22 @@ export default {
         this.$refs.dnd.nextSibling.dispatchEvent(e2);
       }
     };
+  },
+  methods: {
+    moveToTop(card) {
+      this.sortedCards.splice(this.sortedCards.indexOf(card), 1);
+      this.sortedCards.push(card);
+    }
+  },
+  watch: {
+    cards() {
+      this.cards.forEach(c => {
+        if (!this.sortedCards.includes(c)) {
+          this.sortedCards.push(c);
+        }
+      });
+      // TODO Handle removal
+    }
   },
   components: {
     "my-card": Card,

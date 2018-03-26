@@ -68,15 +68,14 @@ status = CLOSED
 status_length = 50
 status_history = deque([], status_length)
 
-ocr_done = False
 is_uploaded = False
 
 def handle_closing():
-    global ocr_done, status
+    global is_uploaded, status
     if status_history.count(WANT_TO_CLOSE) == status_length :
         status=CLOSED
         set_config({"status": CLOSED})
-        ocr_done = False
+        is_uploaded = False
 
 # Begin capturing frames
 while cam_quit == 0:
@@ -107,15 +106,13 @@ while cam_quit == 0:
                     # Find the best rank and suit match for the card.
                     card.best_rank_match, card.rank_diff = Cards.match_card(
                         card, train_ranks)
+                    # TODO if no match upload
                     if not is_uploaded:
                         r_card = create_remote_card()
                         card.id = r_card.id
                         is_uploaded = True
                         upload_card(card)
                         r_card.set({"isUploaded": True})
-                    if not ocr_done:
-                        ocr_done = True
-                        Thread(target=Cards.ocr_card, args=(card,)).start()
                 # Draw center point and match result on the image.
                 annotatedImage = Cards.draw_results(annotatedImage, card)
                 cards.append(card)
