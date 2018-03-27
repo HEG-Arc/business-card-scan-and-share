@@ -37,8 +37,11 @@ def create_remote_card():
 
 def upload_card(card):
         f, filename = tempfile.mkstemp(prefix="business_card", suffix=".jpg")
+        f, filename_match = tempfile.mkstemp(prefix="business_card_match", suffix=".jpg")
         cv2.imwrite(filename, card.warp)
-        print(filename)
+        cv2.imwrite(filename_match, card.warp_match)
         aBlob = bucket.blob("%s/cards/%s.jpg" % (APP_PATH, card.id))
         aBlob.upload_from_filename(filename=filename)
+        aBlob = bucket.blob("%s/cards/%s_match.jpg" % (APP_PATH, card.id))
+        aBlob.upload_from_filename(filename=filename_match)
         # TODO cleanup fn

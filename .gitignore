@@ -3,3 +3,4 @@ __pycache__/
 serviceAccount.json
 venv
 .idea
+.vscode

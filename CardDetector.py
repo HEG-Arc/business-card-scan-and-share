@@ -51,7 +51,7 @@ time.sleep(1)  # Give the camera time to warm up
 # Load the train rank and suit images
 path = os.path.dirname(os.path.abspath(__file__))
 img_dir = 'Card_Imgs'
-train_ranks = Cards.load_ranks(os.path.join(path, img_dir))
+match_cards_lookup = Cards.load_ranks(os.path.join(path, img_dir))
 
 ### ---- MAIN LOOP ---- ###
 # The main loop repeatedly grabs frames from the video stream
@@ -68,14 +68,11 @@ status = CLOSED
 status_length = 50
 status_history = deque([], status_length)
 
-is_uploaded = False
-
 def handle_closing():
-    global is_uploaded, status
+    global status
     if status_history.count(WANT_TO_CLOSE) == status_length :
         status=CLOSED
         set_config({"status": CLOSED})
-        is_uploaded = False
 
 # Begin capturing frames
 while cam_quit == 0:
@@ -105,14 +102,16 @@ while cam_quit == 0:
                 if card.bluriness > config["BLURINESS_THRESHOLD"]:
                     # Find the best rank and suit match for the card.
                     card.best_rank_match, card.rank_diff = Cards.match_card(
-                        card, train_ranks)
-                    # TODO if no match upload
-                    if not is_uploaded:
+                        card, match_cards_lookup)
+                    # handle if no match => new?
+                    if card.best_rank_match == "Unknown":
                         r_card = create_remote_card()
                         card.id = r_card.id
-                        is_uploaded = True
+                        cv2.imwrite(os.path.join(path, img_dir, "%s_match.jpg" % card.id), card.warp_match)
+                        match_cards_lookup[card.id] = {"img": card.warp_match, "name": card.id}
                         upload_card(card)
                         r_card.set({"isUploaded": True})
+                        # TODO: handle duplicate after OCR?
                 # Draw center point and match result on the image.
                 annotatedImage = Cards.draw_results(annotatedImage, card)
                 cards.append(card)
@@ -127,7 +126,7 @@ while cam_quit == 0:
                 temp_cnts.append(cards[i].contour)
             cv2.drawContours(annotatedImage, temp_cnts, -1, (255, 0, 0), 2)
             cv2.imshow("warp", cards[0].warp)
-            cv2.imshow("warpMatch", cards[0].warpMatch)
+            cv2.imshow("warp_match", cards[0].warp_match)
         else:
             if status != CLOSED:
                 status=WANT_TO_CLOSE
@@ -161,7 +160,7 @@ while cam_quit == 0:
     if key == ord("s"):
         cv2.imwrite(os.path.join(path, img_dir, "last.jpg"), cards[0].warp)
         cv2.imwrite(os.path.join(path, img_dir, "last_match.jpg"),
-                    cards[0].warpMatch)
+                    cards[0].warp_match)
 
 
 # Close all windows and close the PiCamera video stream.

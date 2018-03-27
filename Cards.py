@@ -11,9 +11,7 @@ import numpy as np
 import cv2
 import time
 import os
-
-from PIL import Image
-import pytesseract
+import glob
 
 from firebase_admin import firestore
 from Config import config
@@ -43,7 +41,7 @@ class Query_card:
         self.corner_pts = []  # Corner points of card
         self.center = []  # Center point of card
         self.warp = []  # flattened, color image
-        self.warpMatch = []  # flattened, grayed, blurred image
+        self.warp_match = []  # flattened, grayed, blurred image
         self.rank_img = []  # Thresholded, sized image of card's rank
         self.best_rank_match = "Unknown"  # Best matched rank
         self.rank_diff = 0  # Difference between rank image and best matched train rank image
@@ -64,19 +62,14 @@ def load_ranks(filepath):
     """Loads rank images from directory specified by filepath. Stores
     them in a list of Train_ranks objects."""
 
-    train_ranks = []
-    i = 0
+    match_lookup = {}
+    os.chdir(filepath)
+    for f in glob.glob('*_match.jpg'):
+        id = f.split('_match')[0]
+        img = cv2.imread(f, cv2.IMREAD_GRAYSCALE)
+        match_lookup[id] = {"name": id,"img": img}
 
-    for Rank in []:
-
-        train_ranks.append(Train_ranks())
-        train_ranks[i].name = Rank
-        filename = Rank + '.jpg'
-        train_ranks[i].img = cv2.imread(os.path.join(
-            filepath, filename), cv2.IMREAD_GRAYSCALE)
-        i = i + 1
-
-    return train_ranks
+    return match_lookup
 
 
 def preprocess_image(image):
@@ -178,19 +171,13 @@ def preprocess_card(contour, image):
     if ("CROP" in config and config["CROP"] > 0):
         crop = config["CROP"]
         qCard.warp = qCard.warp[crop:-crop, crop:-crop]
-    qCard.warpMatch = cv2.cvtColor(qCard.warp, cv2.COLOR_BGR2GRAY)
+    qCard.warp_match = cv2.cvtColor(qCard.warp, cv2.COLOR_BGR2GRAY)
     # Estimate blur
-    blur_map = cv2.Laplacian(qCard.warpMatch, cv2.CV_64F)
+    blur_map = cv2.Laplacian(qCard.warp_match, cv2.CV_64F)
     qCard.bluriness = int(np.var(blur_map))
-    qCard.warpMatch = cv2.GaussianBlur(qCard.warpMatch, (5, 5), 0)
+    qCard.warp_match = cv2.GaussianBlur(qCard.warp_match, (5, 5), 0)
 
     return qCard
-
-
-def ocr_card(qCard):
-    txt = pytesseract.image_to_string(qCard.warpMatch, lang="fra+eng", config="--psm 11")
-    print(txt)
-    return txt
 
 def match_card(qCard, train_ranks):
     """Finds best rank matches for the query card. Differences
@@ -213,7 +200,7 @@ def match_card(qCard, train_ranks):
             continue
 
         diff_img = cv2.absdiff(cv2.equalizeHist(
-            qCard.warpMatch), cv2.equalizeHist(Trank.img))
+            qCard.warp_match), cv2.equalizeHist(Trank.img))
 
         rank_diff = int(np.sum(diff_img)/255)
         if rank_diff < best_rank_match_diff:
