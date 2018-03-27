@@ -1,9 +1,14 @@
 <template>
   <div :class="'card ' + animation"
    :style="{left: `${left}%`, top: `${top}%`, transform, 'background-image': 'url(https://firebasestorage.googleapis.com/v0/b/firebase-ptw.appspot.com/o/business-card-app%2Fcards%2F' + card.id + '.jpg?alt=media)'}">
-    <p>{{card.entities.map(e => `${e.name} {${e.type}\}`)}} </p>
+    <p v-if="card.entities">{{card.entities.map(e => `${e.name} {${e.type}\}`)}} </p>
     <p>{{card.rawText}}</p>
-    <svg class="ocr-debug" viewBox="0 0 850 550">
+    <p style="color:red">{{email}}</p>
+    <p style="color:yellow">{{phones}}</p>
+    <p style="color:blue">{{npaCity}}</p>
+    <p style="color:red">{{person}}</p>
+    <p style="color:yellow">{{oraganization}}</p>
+    <svg class="ocr-debug" viewBox="0 0 850 550" v-if="card.detections">
       <path v-for="d in card.detections" :d="d|toPath">
         <title>{{d.description}}</title>
       </path>
@@ -13,11 +18,9 @@
 
 <script>
 import interact from "interactjs";
-// some regex
-// EMAIL \b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b
-// basic phones (.):?([\d +()]{7,18})
-// npa city \d{4} [^ \n]+
-
+const reEmail = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
+const rePhone = /(.):?([\d +()]{7,18})/g;
+const reNpaCity = /(\d{4}) ([^\n]+)/;
 export default {
   name: "Card",
   props: ["card"],
@@ -89,10 +92,42 @@ export default {
   computed: {
     transform() {
       return `rotateZ(${this.angle}deg)`;
+    },
+    email() {
+      return this.card.rawText ? this.card.rawText.match(reEmail) : "";
+    },
+    phones() {
+      return this.card.rawText ? this.card.rawText.match(rePhone) : "";
+    },
+    npaCity() {
+      return this.card.rawText ? this.card.rawText.match(reNpaCity) : "";
+    },
+    person() {
+      if (this.card.entities) {
+        const personnes = this.card.entities
+          .filter(e => e.type === "PERSON")
+          .map(e => e.name);
+        if (personnes.length > 0) {
+          return personnes[0];
+        }
+      }
+    },
+    oraganization() {
+      if (this.card.entities) {
+        const orgs = this.card.entities
+          .filter(e => e.type === "ORGANIZATION")
+          .map(e => e.name);
+        if (orgs.length > 0) {
+          return orgs[0];
+        }
+      }
     }
   },
   filters: {
     toPath(d) {
+      if (!(d.boundingPoly && d.boundingPoly.vertices)) {
+        return "";
+      }
       return (
         "M" +
         d.boundingPoly.vertices.map(d => `${d.x} ${d.y}`).join(" L") +
