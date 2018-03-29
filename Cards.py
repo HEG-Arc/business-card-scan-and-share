@@ -47,14 +47,6 @@ class Query_card:
         self.rank_diff = 0  # Difference between rank image and best matched train rank image
         self.bluriness = 0
 
-
-class Train_ranks:
-    """Structure to store information about train rank images."""
-
-    def __init__(self):
-        self.img = []  # Thresholded, sized rank image loaded from hard drive
-        self.name = "Placeholder"
-
 ### Functions ###
 
 
@@ -195,22 +187,21 @@ def match_card(qCard, train_ranks):
 
     # Difference the query card rank image from each of the train rank images,
     # and store the result with the least difference
-    for Trank in train_ranks:
-        if Trank.img is None:
+    for Trank in train_ranks.values():
+        if Trank["img"] is None:
             continue
 
-        diff_img = cv2.absdiff(cv2.equalizeHist(
-            qCard.warp_match), cv2.equalizeHist(Trank.img))
 
-        rank_diff = int(np.sum(diff_img)/255)
-        if rank_diff < best_rank_match_diff:
+        diff_img = cv2.matchTemplate(qCard.warp_match, Trank["img"], cv2.TM_CCOEFF_NORMED)
+        rank_diff = diff_img[0][0]
+        if rank_diff > best_rank_match_diff:
             best_rank_match_diff = rank_diff
-            best_rank_name = Trank.name
+            best_rank_name = Trank["name"]
 
     # Combine best rank match and best suit match to get query card's identity.
     # If the best matches have too high of a difference value, card identity
     # is still Unknown
-    if (best_rank_match_diff < config["DIFF_MAX"]):
+    if (best_rank_match_diff > config["DIFF_MAX"]):
         best_rank_match_name = best_rank_name
 
     # Return the identiy of the card and the quality of the suit and rank match

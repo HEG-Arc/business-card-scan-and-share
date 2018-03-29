@@ -104,6 +104,7 @@ while cam_quit == 0:
                     card.best_rank_match, card.rank_diff = Cards.match_card(
                         card, match_cards_lookup)
                     # handle if no match => new?
+                    print(card.rank_diff, card.best_rank_match)
                     if card.best_rank_match == "Unknown":
                         r_card = create_remote_card()
                         card.id = r_card.id
