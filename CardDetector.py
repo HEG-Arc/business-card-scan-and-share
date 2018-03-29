@@ -18,7 +18,7 @@ import datetime
 from collections import deque
 from threading import Thread
 
-from Config import config, update_config, set_config, upload_card, create_remote_card
+from Config import config, update_config, set_config, upload_card, create_remote_card, db, APP_PATH
 update_config()
 print(config)
 lastConfigUpdate = 0
@@ -72,7 +72,7 @@ def handle_closing():
     global status
     if status_history.count(WANT_TO_CLOSE) == status_length :
         status=CLOSED
-        set_config({"status": CLOSED})
+        set_config({"status": CLOSED, "activeCard": ""})
 
 # Begin capturing frames
 while cam_quit == 0:
@@ -85,7 +85,7 @@ while cam_quit == 0:
 
     # Pre-process camera image (gray, blur, and threshold it)
     pre_proc = Cards.preprocess_image(image)
-    cv2.imshow("pre_proc", pre_proc)
+    # cv2.imshow("pre_proc", pre_proc)
 
     # Find and sort the contours of all cards in the image (query cards)
     cnts_sort, cnt_is_card = Cards.find_cards(pre_proc)
@@ -98,36 +98,38 @@ while cam_quit == 0:
         # For each contour detected:
         for i in range(len(cnts_sort)):
             if (cnt_is_card[i] == 1):
+                if (status == CLOSED):
+                    status=SCANNING
+                    set_config({"status":SCANNING})
                 card = Cards.preprocess_card(cnts_sort[i], image)
                 if card.bluriness > config["BLURINESS_THRESHOLD"]:
                     # Find the best rank and suit match for the card.
                     card.best_rank_match, card.rank_diff = Cards.match_card(
                         card, match_cards_lookup)
                     # handle if no match => new?
-                    print(card.rank_diff, card.best_rank_match)
                     if card.best_rank_match == "Unknown":
                         r_card = create_remote_card()
                         card.id = r_card.id
+                        card.best_rank_match = card.id
                         cv2.imwrite(os.path.join(path, img_dir, "%s_match.jpg" % card.id), card.warp_match)
                         match_cards_lookup[card.id] = {"img": card.warp_match, "name": card.id}
                         upload_card(card)
                         r_card.set({"isUploaded": True})
                         # TODO: handle duplicate after OCR?
+                    card.id = card.best_rank_match
                 # Draw center point and match result on the image.
                 annotatedImage = Cards.draw_results(annotatedImage, card)
                 cards.append(card)
         # Draw card contours on image (have to do contours all at once or
         # they do not show up properly for some reason)
         if (len(cards) != 0):
-            if (status == CLOSED):
+            if (cards[0].id != "" and (status == CLOSED or status == SCANNING)):
                 status=OPEN
-                set_config({"status": OPEN})
-            temp_cnts=[]
-            for i in range(len(cards)):
-                temp_cnts.append(cards[i].contour)
+                set_config({"status": OPEN, "activeCard": db.collection("%s/data/cards" % APP_PATH).document(cards[0].id)})
+            temp_cnts = [card.contour for card in cards]
             cv2.drawContours(annotatedImage, temp_cnts, -1, (255, 0, 0), 2)
-            cv2.imshow("warp", cards[0].warp)
-            cv2.imshow("warp_match", cards[0].warp_match)
+            # cv2.imshow("warp", cards[0].warp)
+            # cv2.imshow("warp_match", cards[0].warp_match)
         else:
             if status != CLOSED:
                 status=WANT_TO_CLOSE
