@@ -29,9 +29,9 @@ export default {
       x: 0,
       y: 0,
       dx: 0,
-      left: 0,
-      top: 0,
-      angle: 0,
+      left: Math.random() * 80,
+      top: Math.random() * 80,
+      angle: Math.random() * 40 - 20,
       dragging: false,
       animation: ""
     };
