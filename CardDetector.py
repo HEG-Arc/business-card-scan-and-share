@@ -64,14 +64,16 @@ CLOSED = "CLOSED"
 SCANNING = "SCANNING"
 OPEN = "OPEN"
 status = CLOSED
+current_match_card = None
 
 status_length = 50
 status_history = deque([], status_length)
 
 def handle_closing():
-    global status
+    global status, current_match_card
     if status_history.count(WANT_TO_CLOSE) == status_length :
         status=CLOSED
+        current_match_card = None
         set_config({"status": CLOSED, "activeCard": ""})
 
 # Begin capturing frames
@@ -93,21 +95,30 @@ while cam_quit == 0:
     annotatedImage = image.copy()
     # If there are no contours, do nothing
     if len(cnts_sort) != 0:
-
+        print("found contours")
         cards = []
         # For each contour detected:
         for i in range(len(cnts_sort)):
             if (cnt_is_card[i] == 1):
+                print("found card")
                 if (status == CLOSED):
                     status=SCANNING
                     set_config({"status":SCANNING})
                 card = Cards.preprocess_card(cnts_sort[i], image)
                 if card.bluriness > config["BLURINESS_THRESHOLD"]:
-                    # Find the best rank and suit match for the card.
-                    card.best_rank_match, card.rank_diff = Cards.match_card(
-                        card, match_cards_lookup)
+                    # if last match validate if still same
+                    print("Blur ok")
+                    if current_match_card is not None:
+                        print("checking current card")
+                        card.best_rank_match, card.rank_diff = Cards.match_card(
+                        card, current_match_card)
+                    else:
+                        print("checking all cards")
+                        card.best_rank_match, card.rank_diff = Cards.match_card(
+                            card, match_cards_lookup)
                     # handle if no match => new?
                     if card.best_rank_match == "Unknown":
+                        print("found unknown")
                         r_card = create_remote_card()
                         card.id = r_card.id
                         card.best_rank_match = card.id
@@ -124,19 +135,24 @@ while cam_quit == 0:
         # they do not show up properly for some reason)
         if (len(cards) != 0):
             if (cards[0].id != "" and (status == CLOSED or status == SCANNING)):
-                status=OPEN
+                current_match_card = {}
+                current_match_card[card.id] = {"name": card.id, "img": card.warp_match}
                 set_config({"status": OPEN, "activeCard": db.collection("%s/data/cards" % APP_PATH).document(cards[0].id)})
+            status=OPEN
             temp_cnts = [card.contour for card in cards]
             cv2.drawContours(annotatedImage, temp_cnts, -1, (255, 0, 0), 2)
             # cv2.imshow("warp", cards[0].warp)
             # cv2.imshow("warp_match", cards[0].warp_match)
         else:
+            print("no cards")
             if status != CLOSED:
                 status=WANT_TO_CLOSE
     else:
+        print("no contours")
         if status != CLOSED:
             status=WANT_TO_CLOSE
     status_history.append(status)
+    print(status)
     handle_closing()
     # Draw framerate in the corner of the image. Framerate is calculated at the end of the main loop,
     # so the first time this runs, framerate will be shown as 0.

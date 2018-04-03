@@ -43,6 +43,8 @@ OK    -> GATE.status == CLOSED
 
 -> movements?
 OK -> moveToTop
+-> filter/search
+-> share a drawing?
 
 pip install --upgrade firebase-admin
 
