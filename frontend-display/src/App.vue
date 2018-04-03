@@ -50,12 +50,20 @@ export default {
   },
   watch: {
     cards() {
+      const cardIds = this.cards.map(c => c.id);
+      const sortedCardsIds = this.sortedCards.map(c => c.id);
+      // handle adds
       this.cards.forEach(c => {
-        if (!this.sortedCards.includes(c)) {
+        if (!sortedCardsIds.includes(c.id)) {
           this.sortedCards.push(c);
         }
       });
-      // TODO Handle removal
+      // handle removes
+      this.sortedCards.forEach(sc => {
+        if (!cardIds.includes(sc.id)) {
+          this.sortedCards.splice(this.sortedCards.indexOf(sc), 1);
+        }
+      });
     }
   },
   components: {
