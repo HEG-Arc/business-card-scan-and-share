@@ -4,8 +4,7 @@
       <my-logo style="transform: rotate(180deg); top: 0; left: 0;"></my-logo>
       <my-logo style="bottom: 0;right: 0;"></my-logo>
       <button type="button" id="start-draw"
-            v-on:click="showDraw=true"
-            title="close"><i class="ion ion-image"></i>
+            v-on:click="showDraw=true"><i class="ion ion-image"></i>
     </button>
       <my-card v-for="card in sortedCards" :key="card.id" :card="card" @dragstart="moveToTop(card)"></my-card>
       <my-gate v-for="gate in gates" :key="gate.id" :gate="gate"></my-gate>
@@ -139,10 +138,16 @@ button {
   box-sizing: border-box;
 }
 
-#start-draw {
-  font-size: 100px;
-  top: calc(50% - 50px);
-  left: calc(50% - 50px);
+#start-draw, #start-draw:hover {
+    font-size: 50px;
+    top: calc(50% - 50px);
+    left: calc(50% - 50px);
+    border: 2px solid;
+    border-radius: 50%;
+    height: 100px;
+    width: 100px;
+    background-color: #173160;
+    opacity: 1;
 }
 
 html,
