@@ -13,8 +13,11 @@
     "@google-cloud/language": "^1.2.0",
     "@google-cloud/storage": "^1.6.0",
     "@google-cloud/vision": "^0.17.0",
+    "assert": "^1.4.1",
     "firebase-admin": "~5.4.2",
-    "firebase-functions": "^0.7.1"
+    "firebase-functions": "^0.7.1",
+    "jayson": "^2.0.5",
+    "lodash": "^4.17.5"
   },
   "private": true
 }
