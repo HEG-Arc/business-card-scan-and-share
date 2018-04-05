@@ -3,8 +3,13 @@
     <div id="dnd" ref="dnd">
       <my-logo style="transform: rotate(180deg); top: 0; left: 0;"></my-logo>
       <my-logo style="bottom: 0;right: 0;"></my-logo>
+      <button type="button" id="start-draw"
+            v-on:click="showDraw=true"
+            title="close"><i class="ion ion-image"></i>
+    </button>
       <my-card v-for="card in sortedCards" :key="card.id" :card="card" @dragstart="moveToTop(card)"></my-card>
       <my-gate v-for="gate in gates" :key="gate.id" :gate="gate"></my-gate>
+      <my-draw v-if="showDraw" :history="drawHistory" @close="showDraw=false"></my-draw>
     </div>
   </div>
 </template>
@@ -13,6 +18,7 @@
 import Card from "@/components/Card";
 import Gate from "@/components/Gate";
 import Logo from "@/components/Logo";
+import Draw from "@/components/Draw";
 import { db, DB_APP_ROOT } from "@/main";
 
 export default {
@@ -21,7 +27,9 @@ export default {
     return {
       cards: [],
       sortedCards: [],
-      gates: []
+      gates: [],
+      drawHistory: [],
+      showDraw: false
     };
   },
   firestore() {
@@ -69,15 +77,74 @@ export default {
   components: {
     "my-card": Card,
     "my-gate": Gate,
-    "my-logo": Logo
+    "my-logo": Logo,
+    "my-draw": Draw
   }
 };
 </script>
 
-<style>
+<style lang="scss">
+@import url('https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css');
+
+button {
+  appearance: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: 0;
+  width: 40px;
+  height: 60px;
+  display: inline-block;
+  background-color: transparent;
+  color: rgb(140, 140, 140);
+  font-size: 22px;
+  transition: all 0.15s;
+  cursor: pointer;
+  outline: 0;
+  position: relative;
+
+  .size-icon,
+  .color-icon {
+    position: absolute;
+    top: 10px;
+    right: 0;
+  }
+
+  .color-icon {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+  }
+
+  .size-icon {
+    font-size: 6px;
+    text-align: right;
+  }
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &:active,
+  &.active {
+    color: white;
+  }
+
+  &.disabled {
+    color: rgb(50, 50, 50);
+    cursor: not-allowed;
+  }
+}
+
 * {
   box-sizing: border-box;
 }
+
+#start-draw {
+  font-size: 100px;
+  top: calc(50% - 50px);
+  left: calc(50% - 50px);
+}
+
 html,
 body {
   width: 100%;
@@ -106,6 +173,17 @@ body {
 }
 #app canvas {
   position: absolute;
+  top: 0;
+  left: 0;
+}
+
+
+.box {
+  width: 400px;
+  height: 400px;
+  background-color: red;
+  position: absolute;
+  z-index: 20;
   top: 0;
   left: 0;
 }
