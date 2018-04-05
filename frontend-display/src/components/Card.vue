@@ -1,18 +1,30 @@
 <template>
   <div :class="'card ' + animation"
-   :style="{left: `${left}%`, top: `${top}%`, transform, 'background-image': 'url(https://firebasestorage.googleapis.com/v0/b/firebase-ptw.appspot.com/o/business-card-app%2Fcards%2F' + card.id + '.jpg?alt=media)'}">
-    <p v-if="card.entities">{{card.entities.map(e => `${e.name} {${e.type}\}`)}} </p>
-    <p>{{card.rawText}}</p>
-    <p style="color:red">{{email}}</p>
-    <p style="color:yellow">{{phones}}</p>
-    <p style="color:blue">{{npaCity}}</p>
-    <p style="color:red">{{person}}</p>
-    <p style="color:yellow">{{oraganization}}</p>
-    <svg class="ocr-debug" viewBox="0 0 850 550" v-if="card.detections">
-      <path v-for="d in card.detections" :d="d|toPath">
-        <title>{{d.description}}</title>
-      </path>
-    </svg>
+   :style="{left: `${left}%`, top: `${top}%`, transform}">
+    <div class="flipper" :class="{flipped: flipped}">
+      <div class="side side-scan" :style="{'background-image': 'url(https://firebasestorage.googleapis.com/v0/b/firebase-ptw.appspot.com/o/business-card-app%2Fcards%2F' + card.id + '.jpg?alt=media)'}">
+        <svg class="ocr-debug" viewBox="0 0 850 550" v-if="card.detections">
+          <path v-for="d in card.detections" :d="d|toPath">
+            <title>{{d.description}}</title>
+          </path>
+        </svg>
+        <span class="flip-button" @click="flipped=!flipped"><i class="ion ion-loop"></i></span>
+      </div>
+      <div class="side side-data">
+          <div v-if="card.odoo">
+            <h2>{{card.odoo.registration.name}}</h2>
+            <h3>{{card.odoo.registration.x_company}}</h3>
+          </div>
+          <p v-if="card.entities">{{card.entities.map(e => `${e.name} {${e.type}\}`)}} </p>
+          <p>{{card.rawText}}</p>
+          <p style="color:red">{{email}}</p>
+          <p style="color:yellow">{{phones}}</p>
+          <p style="color:blue">{{npaCity}}</p>
+          <p style="color:red">{{person}}</p>
+          <p style="color:yellow">{{oraganization}}</p>
+          <span class="flip-button" @click="flipped=!flipped"><i class="ion ion-loop"></i></span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -34,7 +46,8 @@ export default {
       top: Math.random() * 80,
       angle: Math.random() * 40 - 20,
       dragging: false,
-      animation: ""
+      animation: "",
+      flipped: this.card.isUploaded ? false : true
     };
   },
   mounted() {
@@ -130,6 +143,13 @@ export default {
       }
     }
   },
+  watch: {
+    'card.isUploaded': function(val) {
+      if(!this.card.isUploaded) {
+        this.flipped = true;
+      }
+    }
+  },
   filters: {
     toPath(d) {
       if (!(d.boundingPoly && d.boundingPoly.vertices)) {
@@ -147,21 +167,59 @@ export default {
 </script>
 
 <style>
-.card {
-  position: absolute;
-  background-color: #fff;
-  background-repeat: no-repeat;
-  background-size: contain;
-  color: green;
+.card, .side {
   width: 255px;
   height: 165px;
+}
+
+.card {
+  position: absolute;
   z-index: 10;
   -webkit-animation-duration: 1s;
   animation-duration: 1s;
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
   box-shadow: 0px 0px 25px rgba(59, 59, 59, 0.55);
+  perspective: 1000px;
 }
+
+.flipper {
+  transition: 0.6s;
+	transform-style: preserve-3d;
+
+	position: relative;
+}
+
+.side {
+  backface-visibility: hidden;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.side-data {
+  color: green;
+  background-color: white;
+  transform: rotateY(180deg);
+}
+
+.side-scan {
+  background-color: #fff;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.flipped {
+  transform: rotateY(180deg);
+}
+
+.flip-button {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  cursor: pointer;
+}
+
 
 @keyframes zoomOutDown {
   40% {
@@ -188,7 +246,6 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  display: none;
 }
 
 .ocr-debug path {
