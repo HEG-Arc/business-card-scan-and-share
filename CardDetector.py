@@ -66,7 +66,7 @@ OPEN = "OPEN"
 status = CLOSED
 current_match_card = None
 
-status_length = 50
+status_length = 10
 status_history = deque([], status_length)
 
 def handle_closing():
@@ -99,9 +99,9 @@ while cam_quit == 0:
         cards = []
         # For each contour detected:
         for i in range(len(cnts_sort)):
-            if (cnt_is_card[i] == 1):
+            if cnt_is_card[i] == 1:
                 print("found card")
-                if (status == CLOSED):
+                if status == CLOSED:
                     status=SCANNING
                     set_config({"status":SCANNING})
                 card = Cards.preprocess_card(cnts_sort[i], image)
@@ -133,12 +133,14 @@ while cam_quit == 0:
                 cards.append(card)
         # Draw card contours on image (have to do contours all at once or
         # they do not show up properly for some reason)
-        if (len(cards) != 0):
-            if (cards[0].id != "" and (status == CLOSED or status == SCANNING)):
+        if len(cards) != 0:
+            if cards[0].id != "" and (status == CLOSED or status == SCANNING):
                 current_match_card = {}
                 current_match_card[card.id] = {"name": card.id, "img": card.warp_match}
                 set_config({"status": OPEN, "activeCard": db.collection("%s/data/cards" % APP_PATH).document(cards[0].id)})
-            status=OPEN
+                status=OPEN
+            if status == WANT_TO_CLOSE:
+                status = OPEN
             temp_cnts = [card.contour for card in cards]
             cv2.drawContours(annotatedImage, temp_cnts, -1, (255, 0, 0), 2)
             # cv2.imshow("warp", cards[0].warp)
@@ -146,11 +148,11 @@ while cam_quit == 0:
         else:
             print("no cards")
             if status != CLOSED:
-                status=WANT_TO_CLOSE
+                status = WANT_TO_CLOSE
     else:
         print("no contours")
         if status != CLOSED:
-            status=WANT_TO_CLOSE
+            status = WANT_TO_CLOSE
     status_history.append(status)
     print(status)
     handle_closing()
