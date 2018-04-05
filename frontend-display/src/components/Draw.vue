@@ -152,59 +152,7 @@ export default {
       this.redraw();
     },
     removeAllHistory() {
-      this.history = [];
-      this.redraw();
-    },
-    simplify() {
-      var simpleHistory = [];
-      this.history.forEach((item, i) => {
-        if (i % 6 !== 1 || item.isDummy) {
-          simpleHistory.push(item);
-        }
-      });
-      this.history = simpleHistory;
-      this.redraw();
-    },
-    jumble() {
-      var simpleHistory = [];
-      this.history.forEach((item, i) => {
-        item.r += Math.sin(i * 20) * 5;
-      });
-      this.history = this.shuffle(this.history);
-      this.redraw();
-    },
-    shuffle(a) {
-      var b = [];
-
-      a.forEach((item, i) => {
-        if (!item.isDummy) {
-          var l = b.length;
-          var r = Math.floor(l * Math.random());
-          b.splice(r, 0, item);
-        }
-      });
-
-      for (var i = 0; i < b.length; i++) {
-        if (i % 20 === 1) {
-          b.push(this.getDummyItem());
-        }
-      }
-
-      return b;
-    },
-    saveItem() {
-      if (this.save.name.length > 2) {
-        var historyItem = {
-          history: this.history.slice(),
-          name: this.save.name
-        };
-
-        this.save.saveItems.push(historyItem);
-        this.save.name = "";
-      }
-    },
-    loadSave(item) {
-      this.history = item.history.slice();
+      this.history.splice(0);
       this.redraw();
     },
     listen() {
