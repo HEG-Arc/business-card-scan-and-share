@@ -34,7 +34,7 @@ export default {
     this.dropzone = interact(this.$el).dropzone({
       // Require a 75% element overlap for a drop to be possible
       accept: ".card",
-      overlap: 0.75,
+      overlap: 0.5,
       ondropactivate: event => {
         // add active dropzone feedback
         event.target.classList.add("drop-active");
