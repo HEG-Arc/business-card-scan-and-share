@@ -54,7 +54,7 @@ export default {
       const sortedCardsIds = this.sortedCards.map(c => c.id);
       // handle adds
       this.cards.forEach(c => {
-        if (!sortedCardsIds.includes(c.id)) {
+        if (!c.isHidden && !sortedCardsIds.includes(c.id)) {
           this.sortedCards.push(c);
         }
       });
