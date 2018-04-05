@@ -18,6 +18,7 @@
 
 <script>
 import interact from "interactjs";
+import { db, DB_APP_ROOT } from "../main";
 const reEmail = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
 const rePhone = /(.):?([\d +()]{7,18})/g;
 const reNpaCity = /(\d{4}) ([^\n]+)/;
@@ -72,12 +73,18 @@ export default {
             // TODO: send MATCH to backend
             this.animation = "zoomOutDown";
             setTimeout(() => {
-              this.animation = "zoomIn";
-              this.left = 50;
-              this.top = 50;
-              setTimeout(() => {
-                this.animation = "";
-              }, 1000);
+              if (event.relatedTarget.__vue__.gate.activeCard && event.relatedTarget.__vue__.gate.activeCard.special === 'DELETE') {
+                db.collection(`${DB_APP_ROOT}/data/cards`).doc(this.card.id).delete();
+                // TODO cloud function trigger cleanup storage
+              } else {
+                this.animation = "zoomIn";
+                this.left = Math.random() * 40 + 20;
+                this.top = Math.random() * 40 + 20;
+                this.angle = Math.random() * 40 - 20;
+                setTimeout(() => {
+                  this.animation = "";
+                }, 1000);
+              }
             }, 1000);
           }
         }
