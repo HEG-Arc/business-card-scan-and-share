@@ -49,8 +49,9 @@ class VideoStream:
         if self.PiOrUSB == 2: # USB camera
             # Initialize the USB camera and the camera image stream
             self.stream = cv2.VideoCapture(src)
-            ret = self.stream.set(3,resolution[0])
-            ret = self.stream.set(4,resolution[1])
+            self.stream.set(3,resolution[0])
+            self.stream.set(4,resolution[1])
+            self.stream.set(cv2.CAP_PROP_AUTOFOCUS, 0) # turn the autofocus off
             #ret = self.stream.set(5,framerate) #Doesn't seem to do anything so it's commented out
 
             # Read first frame from the stream
@@ -67,7 +68,7 @@ class VideoStream:
     def update(self):
 
         if self.PiOrUSB == 1: # PiCamera
-            
+
             # Keep looping indefinitely until the thread is stopped
             for f in self.stream:
                 # Grab the frame from the stream and clear the stream
