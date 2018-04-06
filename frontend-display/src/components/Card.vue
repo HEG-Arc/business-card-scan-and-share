@@ -42,9 +42,9 @@ export default {
       x: 0,
       y: 0,
       dx: 0,
-      left: Math.random() * 80,
-      top: Math.random() * 80,
-      angle: Math.random() * 40 - 20,
+      left: parseInt(Math.random() * 80),
+      top: parseInt(Math.random() * 80),
+      angle: parseInt(Math.random() * 40 - 20),
       dragging: false,
       animation: "",
       flipped: this.card.isUploaded ? false : true
@@ -91,9 +91,9 @@ export default {
                 // TODO cloud function trigger cleanup storage
               } else {
                 this.animation = "zoomIn";
-                this.left = Math.random() * 40 + 20;
-                this.top = Math.random() * 40 + 20;
-                this.angle = Math.random() * 40 - 20;
+                this.left = parseInt(Math.random() * 40 + 20);
+                this.top = parseInt(Math.random() * 40 + 20);
+                this.angle = parseInt(Math.random() * 40 - 20);
                 setTimeout(() => {
                   this.animation = "";
                 }, 1000);
