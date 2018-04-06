@@ -75,3 +75,51 @@ exports.businessCardExtractText = functions.storage
       });
   });
 
+const Odoo = require('./odoo');
+
+const odoo = new Odoo({
+  host: 'economie.digital',
+  port: 443,
+  database: 'digital',
+  username: functions.config().odoo.username,
+  password: functions.config().odoo.password,
+  protocol: 'https'
+});
+
+exports.importRegistrations = functions.https.onRequest((req, res) => {
+  if (!req.query.hasOwnProperty('id')) {
+    return "NEED an odoo event id"
+  }
+  // get list from db
+  return db.collection(`${DB_ROOT}/data/cards`).get().then(snapshot => {
+    const cards = [];
+    snapshot.forEach((doc) => {
+      cards.push(doc.data())
+    });
+    const existing = cards.filter(c => c.hasOwnProperty('odoo')).map(c => c.odoo.registration.id);
+    console.log(existing);
+
+    // get list from odoo
+    return odoo.connect().then(() => {
+      return odoo.search_read('event.registration', {
+        limit: 100,
+        fields: ['attendee_partner_id', 'email', 'x_company', 'name', 'state', 'date_open'],
+        domain: [
+          ['event_id', '=', parseInt(req.query.id)]
+        ]
+      }).then(registrations => {
+        return Promise.all(registrations.filter(r => !existing.includes(r.id)).map(r => {
+          console.log('create', r.id)
+          return db.collection(`${DB_ROOT}/data/cards`).add({
+            isUploaded: false,
+            odoo: {
+              registration: r
+            }
+          });
+        })).then(() => {
+          res.send('done');
+        });
+      });
+    });
+  });
+});

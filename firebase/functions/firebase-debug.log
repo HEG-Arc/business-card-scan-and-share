@@ -1,32 +1,33 @@
-[debug] [2018-04-06T11:53:29.338Z] ----------------------------------------------------------------------
-[debug] [2018-04-06T11:53:29.340Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\bfrit\AppData\Roaming\npm\node_modules\firebase-tools\bin\firebase functions:shell
-[debug] [2018-04-06T11:53:29.341Z] CLI Version:   3.18.0
-[debug] [2018-04-06T11:53:29.341Z] Platform:      win32
-[debug] [2018-04-06T11:53:29.341Z] Node Version:  v8.9.0
-[debug] [2018-04-06T11:53:29.341Z] Time:          Fri Apr 06 2018 13:53:29 GMT+0200 (W. Europe Daylight Time)
-[debug] [2018-04-06T11:53:29.341Z] ----------------------------------------------------------------------
+[debug] [2018-04-06T12:26:51.994Z] ----------------------------------------------------------------------
+[debug] [2018-04-06T12:26:51.997Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\bfrit\AppData\Roaming\npm\node_modules\firebase-tools\bin\firebase functions:shell
+[debug] [2018-04-06T12:26:51.997Z] CLI Version:   3.18.0
+[debug] [2018-04-06T12:26:51.997Z] Platform:      win32
+[debug] [2018-04-06T12:26:51.997Z] Node Version:  v8.9.0
+[debug] [2018-04-06T12:26:51.997Z] Time:          Fri Apr 06 2018 14:26:51 GMT+0200 (W. Europe Daylight Time)
+[debug] [2018-04-06T12:26:51.998Z] ----------------------------------------------------------------------
 [debug] 
-[debug] [2018-04-06T11:53:29.355Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
-[debug] [2018-04-06T11:53:29.357Z] > authorizing via signed-in user
-[debug] [2018-04-06T11:53:29.360Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/firebase-ptw  
+[debug] [2018-04-06T12:26:52.013Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-04-06T12:26:52.014Z] > authorizing via signed-in user
+[debug] [2018-04-06T12:26:52.017Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/firebase-ptw  
   
- Fri Apr 06 2018 13:53:29 GMT+0200 (W. Europe Daylight Time)
-[debug] [2018-04-06T11:53:30.141Z] <<< HTTP RESPONSE 200
-[debug] [2018-04-06T11:53:30.142Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/ptw/tokens  
+ Fri Apr 06 2018 14:26:52 GMT+0200 (W. Europe Daylight Time)
+[debug] [2018-04-06T12:26:52.803Z] <<< HTTP RESPONSE 200
+[debug] [2018-04-06T12:26:52.803Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/ptw/tokens  
   
- Fri Apr 06 2018 13:53:30 GMT+0200 (W. Europe Daylight Time)
-[debug] [2018-04-06T11:53:30.778Z] <<< HTTP RESPONSE 200
+ Fri Apr 06 2018 14:26:52 GMT+0200 (W. Europe Daylight Time)
+[debug] [2018-04-06T12:26:53.588Z] <<< HTTP RESPONSE 200
 [info] i  functions: Preparing to emulate functions.
-[debug] [2018-04-06T11:53:31.809Z] Fetching environment
-[debug] [2018-04-06T11:53:31.811Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/firebase-ptw  
+[debug] [2018-04-06T12:26:54.458Z] Fetching environment
+[debug] [2018-04-06T12:26:54.461Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/firebase-ptw  
   
- Fri Apr 06 2018 13:53:31 GMT+0200 (W. Europe Daylight Time)
-[debug] [2018-04-06T11:53:32.601Z] <<< HTTP RESPONSE 200
-[debug] [2018-04-06T11:53:32.601Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/281865054216:getServerAppConfig  
+ Fri Apr 06 2018 14:26:54 GMT+0200 (W. Europe Daylight Time)
+[debug] [2018-04-06T12:26:55.256Z] <<< HTTP RESPONSE 200
+[debug] [2018-04-06T12:26:55.257Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/281865054216:getServerAppConfig  
   
- Fri Apr 06 2018 13:53:32 GMT+0200 (W. Europe Daylight Time)
-[debug] [2018-04-06T11:53:33.006Z] <<< HTTP RESPONSE 200
-[debug] [2018-04-06T11:53:33.007Z] Starting @google-cloud/functions-emulator
-[debug] [2018-04-06T11:53:35.153Z] Parsing function triggers
-[debug] [2018-04-06T11:53:37.109Z] Deploying functions locally
+ Fri Apr 06 2018 14:26:55 GMT+0200 (W. Europe Daylight Time)
+[debug] [2018-04-06T12:26:55.775Z] <<< HTTP RESPONSE 200
+[debug] [2018-04-06T12:26:55.776Z] Starting @google-cloud/functions-emulator
+[debug] [2018-04-06T12:26:58.428Z] Parsing function triggers
+[debug] [2018-04-06T12:27:00.282Z] Deploying functions locally
 [info] +  functions: businessCardExtractText
+[info] +  functions: importRegistrations

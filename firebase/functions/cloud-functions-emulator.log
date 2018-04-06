@@ -50,3 +50,446 @@ Execution took 6 ms, user function completed successfully
 2018-04-06T11:54:12.159Z - info: Execution took 4401 ms, user function completed successfully
 2018-04-06T11:54:56.621Z - info: Worker for businessCardExtractText closed due to file changes.
 2018-04-06T11:54:56.641Z - error: Function worker killed by signal: SIGTERM
+2018-04-06T12:27:28.563Z - info: User function triggered, starting execution
+2018-04-06T12:27:29.945Z - error: (node:32620) UnhandledPromiseRejectionWarning: Unhandled promise rejection (rejection id: 1): TypeError: cards.filter is not a function
+2018-04-06T12:27:29.946Z - error: (node:32620) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code.
+2018-04-06T12:27:58.631Z - info: Execution took 30081 ms, finished with status: 'crash'
+2018-04-06T12:27:58.658Z - error: Function worker killed by signal: SIGTERM
+2018-04-06T12:28:11.594Z - info: User function triggered, starting execution
+2018-04-06T12:28:12.948Z - error: (node:10996) UnhandledPromiseRejectionWarning: Unhandled promise rejection (rejection id: 1): TypeError: cards is not iterable
+2018-04-06T12:28:12.949Z - error: (node:10996) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code.
+2018-04-06T12:28:52.879Z - info: Execution took 43696 ms, finished with status: 'crash'
+2018-04-06T12:28:52.901Z - error: Function worker killed by signal: SIGTERM
+2018-04-06T12:30:08.595Z - error: C:\Users\bfrit\Documents\GitHub\OpenCV-Playing-Card-Detector\firebase\functions\index.js:98
+    await odoo.connect();
+          ^^^^
+
+SyntaxError: Unexpected identifier
+    at createScript (vm.js:80:10)
+    at Object.runInThisContext (vm.js:139:10)
+    at Module._compile (module.js:599:28)
+    at Object.Module._extensions..js (module.js:646:10)
+    at Module.load (module.js:554:32)
+    at tryModuleLoad (module.js:497:12)
+    at Function.Module._load (module.js:489:3)
+    at Module.require (module.js:579:17)
+    at require (internal/module.js:11:18)
+    at process.on (C:\Users\bfrit\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\@google-cloud\functions-emulator\src\supervisor\worker.js:76:28)
+2018-04-06T12:30:08.608Z - error: Function worker crashed with exit code: 1
+2018-04-06T12:30:42.493Z - error: C:\Users\bfrit\Documents\GitHub\OpenCV-Playing-Card-Detector\firebase\functions\index.js:98
+    await odoo.connect();
+          ^^^^
+
+SyntaxError: Unexpected identifier
+    at createScript (vm.js:80:10)
+    at Object.runInThisContext (vm.js:139:10)
+    at Module._compile (module.js:599:28)
+    at Object.Module._extensions..js (module.js:646:10)
+    at Module.load (module.js:554:32)
+    at tryModuleLoad (module.js:497:12)
+    at Function.Module._load (module.js:489:3)
+    at Module.require (module.js:579:17)
+    at require (internal/module.js:11:18)
+    at process.on (C:\Users\bfrit\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\@google-cloud\functions-emulator\src\supervisor\worker.js:76:28)
+2018-04-06T12:30:42.507Z - error: Function worker crashed with exit code: 1
+2018-04-06T12:30:51.602Z - error: C:\Users\bfrit\Documents\GitHub\OpenCV-Playing-Card-Detector\firebase\functions\index.js:98
+    await odoo.connect();
+          ^^^^
+
+SyntaxError: Unexpected identifier
+    at createScript (vm.js:80:10)
+    at Object.runInThisContext (vm.js:139:10)
+    at Module._compile (module.js:599:28)
+    at Object.Module._extensions..js (module.js:646:10)
+    at Module.load (module.js:554:32)
+    at tryModuleLoad (module.js:497:12)
+    at Function.Module._load (module.js:489:3)
+    at Module.require (module.js:579:17)
+    at require (internal/module.js:11:18)
+    at process.on (C:\Users\bfrit\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\@google-cloud\functions-emulator\src\supervisor\worker.js:76:28)
+2018-04-06T12:30:51.618Z - error: Function worker crashed with exit code: 1
+2018-04-06T12:31:23.707Z - info: User function triggered, starting execution
+2018-04-06T12:32:04.824Z - info: Execution took 43533 ms, finished with status: 'crash'
+2018-04-06T12:32:19.743Z - info: User function triggered, starting execution
+2018-04-06T12:32:21.163Z - info: [ 40 ]
+2018-04-06T12:32:21.464Z - info: []
+2018-04-06T12:32:54.201Z - info: Execution took 36885 ms, finished with status: 'crash'
+2018-04-06T12:33:23.766Z - info: User function triggered, starting execution
+2018-04-06T12:33:23.767Z - info: { id: '1' }
+2018-04-06T12:33:25.138Z - info: [ 40 ]
+2018-04-06T12:33:25.755Z - info: []
+2018-04-06T12:33:35.680Z - info: Execution took 14328 ms, finished with status: 'crash'
+2018-04-06T12:34:28.526Z - info: User function triggered, starting execution
+2018-04-06T12:34:30.048Z - info: [ 40 ]
+2018-04-06T12:34:30.329Z - info: [ { attendee_partner_id: [ 44, 'Audrey' ],
+    name: 'Audrey',
+    date_open: '2018-04-03 09:54:00',
+    x_company: 'Tagada Prod',
+    email: 'audrey@tagadaprod.ch',
+    state: 'open',
+    id: 34 },
+  { attendee_partner_id: [ 67, 'Boillat Olivier' ],
+    name: 'Boillat Olivier',
+    date_open: '2018-04-05 13:08:00',
+    x_company: 'FRI',
+    email: 'olivier.boillat@frij.ch',
+    state: 'open',
+    id: 50 },
+  { attendee_partner_id: [ 53, 'Cédric Chèvre' ],
+    name: 'Cédric Chèvre',
+    date_open: '2018-04-04 08:41:22',
+    x_company: 'Décovi SA',
+    email: 'cedric.chevre@decovi.ch',
+    state: 'open',
+    id: 37 },
+  { attendee_partner_id: [ 62, 'Frédéric Baetscher' ],
+    name: 'Frédéric Baetscher',
+    date_open: '2018-04-04 12:31:45',
+    x_company: 'Creapole SA',
+    email: 'frederic.baetscher@creapole.ch',
+    state: 'open',
+    id: 46 },
+  { attendee_partner_id: [ 66, 'Frédéric Montefusco' ],
+    name: 'Frédéric Montefusco',
+    date_open: '2018-04-05 11:33:21',
+    x_company: 'BIOTEC',
+    email: 'frederic.montefusco@biotec.ch',
+    state: 'open',
+    id: 49 },
+  { attendee_partner_id: [ 54, 'Frederic Nicolet' ],
+    name: 'Frederic Nicolet',
+    date_open: '2018-04-04 08:50:17',
+    x_company: 'Baker Hugues, a GE company',
+    email: 'frederic.nicolet@bhge.com',
+    state: 'open',
+    id: 38 },
+  { attendee_partner_id: [ 64, 'Guillaume SIMON' ],
+    name: 'Guillaume SIMON',
+    date_open: '2018-04-05 11:01:14',
+    x_company: 'Prétat SA - Cornol',
+    email: 'gsimon@pretat.ch',
+    state: 'open',
+    id: 47 },
+  { attendee_partner_id: [ 58, 'Jacques Chapatte' ],
+    name: 'Jacques Chapatte',
+    date_open: '2018-04-04 09:04:42',
+    x_company: 'RCJU - SIC',
+    email: 'jacques.chapatte@jura.ch',
+    state: 'open',
+    id: 43 },
+  { attendee_partner_id: [ 57, 'Jean-Paul Fähndrich' ],
+    name: 'Jean-Paul Fähndrich',
+    date_open: '2018-04-04 09:03:52',
+    x_company: 'RCJU- SIC',
+    email: 'jean-paul.faehndrich@jura.ch',
+    state: 'open',
+    id: 42 },
+  { attendee_partner_id: [ 70, 'Jean-Philippe Steullet' ],
+    name: 'Jean-Philippe Steullet',
+    date_open: '2018-04-05 18:52:37',
+    x_company: 'eHyve',
+    email: 'jp@ehyve.com',
+    state: 'open',
+    id: 53 },
+  { attendee_partner_id: [ 69, 'Lapaire Olivier' ],
+    name: 'Lapaire Olivier',
+    date_open: '2018-04-05 13:09:08',
+    x_company: 'FRI',
+    email: 'olivier.lapaire@frij.ch',
+    state: 'open',
+    id: 52 },
+  { attendee_partner_id: [ 68, 'Lionel Gilliotte' ],
+    name: 'Lionel Gilliotte',
+    date_open: '2018-04-05 13:08:39',
+    x_company: 'FRI',
+    email: 'lionel.gilliotte@frij.ch',
+    state: 'open',
+    id: 51 },
+  { attendee_partner_id: [ 61, 'Marc Nass' ],
+    name: 'Marc Nass',
+    date_open: '2018-04-04 10:58:35',
+    x_company: 'Actemium Suisse SA',
+    email: 'marc.nass@actemium.ch',
+    state: 'open',
+    id: 45 },
+  { attendee_partner_id: [ 43, 'Margaux Häni' ],
+    name: 'Margaux Häni',
+    date_open: '2018-04-03 09:19:30',
+    x_company: 'SWIZA',
+    email: 'margaux.hani@gmail.com',
+    state: 'open',
+    id: 33 },
+  { attendee_partner_id: [ 71, 'Mathieu Gigandet' ],
+    name: 'Mathieu Gigandet',
+    date_open: '2018-04-06 07:15:50',
+    x_company: 'Initium',
+    email: 'mathieu.gigandet@initium.ch',
+    state: 'open',
+    id: 54 },
+  { attendee_partner_id: [ 55, 'Olivier Chevre' ],
+    name: 'Olivier Chevre',
+    date_open: '2018-04-04 08:50:58',
+    x_company: 'CODERE SA',
+    email: 'o.chevre@codere.ch',
+    state: 'open',
+    id: 39 },
+  { attendee_partner_id: [ 65, 'Pauline Guillemin' ],
+    name: 'Pauline Guillemin',
+    date_open: '2018-04-05 11:32:56',
+    x_company: 'BIOTEC',
+    email: 'pauline.guillemin@biotec.ch',
+    state: 'open',
+    id: 48 },
+  { attendee_partner_id: [ 52, 'Seuret Florian' ],
+    name: 'Seuret Florian',
+    date_open: '2018-04-04 08:31:34',
+    x_company: 'Willemin-Macodel SA',
+    email: 'florian.seuret@willemin-macodel.com',
+    state: 'open',
+    id: 36 },
+  { attendee_partner_id: [ 40, 'TERMINE FRANCESCO' ],
+    name: 'TERMINE FRANCESCO',
+    date_open: '2018-03-29 11:43:07',
+    x_company: 'HEG Arc',
+    email: 'francesco.termine@he-arc.ch',
+    state: 'open',
+    id: 30 },
+  { attendee_partner_id: [ 72, 'Védovi ' ],
+    name: 'Védovi ',
+    date_open: '2018-04-06 09:08:31',
+    x_company: 'HUMARD Automation SA',
+    email: 'ovedovi@humard.com',
+    state: 'open',
+    id: 55 },
+  { attendee_partner_id: [ 41, 'Victor Schwab' ],
+    name: 'Victor Schwab',
+    date_open: '2018-04-02 16:37:56',
+    x_company: 'PLVS Sàrl',
+    email: 'victor.schwab@plvs.club',
+    state: 'open',
+    id: 31 },
+  { attendee_partner_id: [ 42, 'Voisard Patricia' ],
+    name: 'Voisard Patricia',
+    date_open: '2018-04-03 06:46:13',
+    x_company: 'HE-Arc ',
+    email: 'patricia.voisard@he-arc.ch',
+    state: 'open',
+    id: 32 },
+  { attendee_partner_id: [ 60, 'Yanick Matthey' ],
+    name: 'Yanick Matthey',
+    date_open: '2018-04-04 10:00:24',
+    x_company: 'MPS AG',
+    email: 'yanick.matthey@mpsag.com',
+    state: 'open',
+    id: 44 },
+  { attendee_partner_id: [ 56, 'Yannick Guerdat' ],
+    name: 'Yannick Guerdat',
+    date_open: '2018-04-04 08:54:22',
+    x_company: 'Artionet Web Agency',
+    email: 'yguerdat@artionet.com',
+    state: 'open',
+    id: 40 } ]
+2018-04-06T12:34:30.368Z - info: TODO create 34
+TODO create 50
+TODO create 37
+TODO create 46
+TODO create 49
+TODO create 38
+TODO create 47
+TODO create 43
+TODO create 42
+TODO create 53
+TODO create 52
+TODO create 51
+TODO create 45
+TODO create 33
+TODO create 54
+TODO create 39
+TODO create 48
+TODO create 36
+TODO create 30
+TODO create 55
+TODO create 31
+TODO create 32
+TODO create 44
+2018-04-06T12:34:42.013Z - info: Execution took 15907 ms, finished with status: 'crash'
+2018-04-06T12:40:43.664Z - info: User function triggered, starting execution
+2018-04-06T12:40:45.734Z - info: created 34
+2018-04-06T12:40:46.237Z - info: created 50
+2018-04-06T12:40:46.528Z - info: created 37
+2018-04-06T12:40:47.018Z - info: created 46
+2018-04-06T12:40:47.289Z - info: created 49
+2018-04-06T12:40:47.787Z - info: created 38
+2018-04-06T12:40:48.009Z - info: created 47
+2018-04-06T12:40:48.553Z - info: created 43
+2018-04-06T12:40:48.764Z - info: created 42
+2018-04-06T12:40:49.285Z - info: created 53
+2018-04-06T12:40:49.536Z - info: created 52
+2018-04-06T12:40:50.059Z - info: created 51
+2018-04-06T12:40:50.366Z - info: created 45
+2018-04-06T12:40:50.830Z - info: created 33
+2018-04-06T12:40:51.135Z - info: created 54
+2018-04-06T12:40:51.609Z - info: created 39
+2018-04-06T12:40:51.920Z - info: created 48
+2018-04-06T12:40:52.392Z - info: created 36
+2018-04-06T12:40:52.690Z - info: created 30
+2018-04-06T12:40:53.162Z - info: created 55
+2018-04-06T12:40:53.974Z - info: created 31
+2018-04-06T12:40:54.191Z - info: created 32
+2018-04-06T12:40:54.741Z - info: created 44
+2018-04-06T12:41:30.915Z - info: User function triggered, starting execution
+2018-04-06T12:41:43.654Z - info: Execution took 62605 ms, finished with status: 'timeout'
+2018-04-06T12:41:43.659Z - info: Execution took 12748 ms, finished with status: 'crash'
+2018-04-06T12:42:11.077Z - info: User function triggered, starting execution
+2018-04-06T12:43:11.071Z - info: Execution took 62406 ms, finished with status: 'timeout'
+2018-04-06T12:46:33.881Z - info: User function triggered, starting execution
+2018-04-06T12:46:33.883Z - info: Function crashed
+2018-04-06T12:46:33.884Z - info: ReferenceError: then is not defined
+    at exports.importRegistrations.functions.https.onRequest (C:\Users\bfrit\Documents\GitHub\OpenCV-Playing-Card-Detector\firebase\functions\index.js:94:49)
+    at cloudFunction (C:\Users\bfrit\Documents\GitHub\OpenCV-Playing-Card-Detector\firebase\functions\node_modules\firebase-functions\lib\providers\https.js:37:41)
+    at app.use (C:\Users\bfrit\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\@google-cloud\functions-emulator\src\supervisor\worker.js:142:11)
+    at Layer.handle [as handle_request] (C:\Users\bfrit\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\bfrit\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\express\lib\router\index.js:317:13)
+    at C:\Users\bfrit\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\express\lib\router\index.js:284:7
+    at Function.process_params (C:\Users\bfrit\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\express\lib\router\index.js:335:12)
+    at next (C:\Users\bfrit\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\express\lib\router\index.js:275:10)
+    at app.use (C:\Users\bfrit\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\@google-cloud\functions-emulator\src\supervisor\worker.js:114:7)
+    at Layer.handle [as handle_request] (C:\Users\bfrit\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\express\lib\router\layer.js:95:5)
+2018-04-06T12:46:33.891Z - info: Execution took 10 ms, user function completed successfully
+2018-04-06T12:47:01.112Z - info: User function triggered, starting execution
+2018-04-06T12:48:01.105Z - info: Execution took 62411 ms, finished with status: 'timeout'
+2018-04-06T12:48:13.986Z - info: User function triggered, starting execution
+2018-04-06T12:48:43.324Z - info: User function triggered, starting execution
+2018-04-06T12:49:13.979Z - info: Execution took 62205 ms, finished with status: 'timeout'
+2018-04-06T12:49:13.988Z - info: Execution took 30668 ms, finished with status: 'crash'
+2018-04-06T12:50:26.964Z - info: User function triggered, starting execution
+2018-04-06T12:50:28.325Z - info: [ 30,
+  45,
+  32,
+  52,
+  43,
+  53,
+  55,
+  54,
+  38,
+  46,
+  34,
+  44,
+  42,
+  49,
+  39,
+  40,
+  37,
+  47,
+  36,
+  48,
+  31,
+  51,
+  50,
+  33 ]
+2018-04-06T12:51:26.956Z - info: Execution took 62205 ms, finished with status: 'timeout'
+2018-04-06T12:53:06.720Z - info: User function triggered, starting execution
+2018-04-06T12:53:08.142Z - info: [ 30,
+  45,
+  32,
+  52,
+  43,
+  53,
+  55,
+  54,
+  38,
+  46,
+  34,
+  44,
+  42,
+  49,
+  39,
+  40,
+  37,
+  47,
+  36,
+  48,
+  31,
+  51,
+  50,
+  33 ]
+2018-04-06T12:53:08.409Z - error: (node:1616) UnhandledPromiseRejectionWarning: Unhandled promise rejection (rejection id: 2): TypeError: res.send is not a function
+2018-04-06T12:53:08.410Z - error: (node:1616) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code.
+2018-04-06T12:54:06.706Z - info: Execution took 62205 ms, finished with status: 'timeout'
+2018-04-06T12:54:06.723Z - error: Function worker killed by signal: SIGTERM
+2018-04-06T12:54:58.145Z - info: User function triggered, starting execution
+2018-04-06T12:54:59.543Z - info: [ 30,
+  45,
+  32,
+  52,
+  43,
+  53,
+  55,
+  54,
+  38,
+  46,
+  34,
+  44,
+  42,
+  49,
+  39,
+  40,
+  37,
+  47,
+  36,
+  48,
+  31,
+  51,
+  50,
+  33 ]
+2018-04-06T12:54:59.847Z - info: Execution took 1705 ms, user function completed successfully
+2018-04-06T12:57:12.996Z - info: User function triggered, starting execution
+2018-04-06T12:57:13.455Z - info: [ 30,
+  45,
+  32,
+  52,
+  43,
+  53,
+  55,
+  54,
+  38,
+  46,
+  42,
+  49,
+  39,
+  40,
+  37,
+  47,
+  36,
+  48,
+  31,
+  51,
+  50,
+  33 ]
+2018-04-06T12:57:14.731Z - info: Execution took 1734 ms, user function completed successfully
+2018-04-06T12:57:48.441Z - info: User function triggered, starting execution
+2018-04-06T12:57:49.783Z - info: [ 30,
+  45,
+  32,
+  52,
+  43,
+  53,
+  55,
+  54,
+  38,
+  42,
+  49,
+  39,
+  40,
+  37,
+  47,
+  44,
+  36,
+  48,
+  31,
+  51,
+  50,
+  34,
+  33 ]
+2018-04-06T12:57:50.025Z - info: create 46
+2018-04-06T12:57:50.281Z - info: Execution took 1841 ms, user function completed successfully
