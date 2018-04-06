@@ -11,7 +11,7 @@ import numpy as np
 import cv2
 import time
 import os
-import glob
+
 
 from firebase_admin import firestore
 from Config import config
@@ -48,21 +48,6 @@ class Query_card:
         self.bluriness = 0
 
 ### Functions ###
-
-
-def load_ranks(filepath):
-    """Loads rank images from directory specified by filepath. Stores
-    them in a list of Train_ranks objects."""
-
-    match_lookup = {}
-    os.chdir(filepath)
-    for f in glob.glob('*_match.jpg'):
-        id = f.split('_match')[0]
-        img = cv2.imread(f, cv2.IMREAD_GRAYSCALE)
-        match_lookup[id] = {"name": id,"img": img}
-
-    return match_lookup
-
 
 def preprocess_image(image):
     """Returns a grayed, blurred, and adaptively thresholded camera image."""

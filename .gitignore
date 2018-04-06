@@ -4,3 +4,4 @@ serviceAccount.json
 venv
 .idea
 .vscode
+.runtimeconfig.json

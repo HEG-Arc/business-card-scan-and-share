@@ -49,6 +49,13 @@ OK -> moveToTop
 pip install --upgrade firebase-admin
 
 ----------------
+set GOOGLE_APPLICATION_CREDENTIALS=serviceAccount.json
+firebase functions:config:get > .runtimeconfig.json
+set GOOGLE_APPLICATION_CREDENTIALS=C:\Users\bfrit\Documents\GitHub\OpenCV-Playing-Card-Detector\serviceAccount.json
+
+businessCardExtractText({bucket: 'firebase-ptw.appspot.com', name: 'business-card-app/cards/0noGEr6QP1uvs7cu5isl.jpg', contentType: 'image/'})
+
+----------------
 
 
 This is a version of OpenCV-Playing-Card-Detector adjusted for recognition of Magic The Gathering cards. It wasn't tested on Raspberry Pi, only PC.

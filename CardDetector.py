@@ -1,13 +1,3 @@
-############## Python-OpenCV Playing Card Detector ###############
-#
-# Author: Evan Juras
-# Date: 9/5/17
-# Description: Python script to detect and identify playing cards
-# from a PiCamera video feed.
-#
-
-# Import necessary packages
-
 import cv2
 import numpy as np
 import time
@@ -15,6 +5,8 @@ import os
 import Cards
 import VideoStream
 import datetime
+import glob
+import urllib.request
 from collections import deque
 from threading import Thread
 
@@ -22,6 +14,38 @@ from Config import config, update_config, set_config, upload_card, create_remote
 update_config()
 print(config)
 lastConfigUpdate = 0
+
+path = os.path.dirname(os.path.abspath(__file__))
+img_dir = 'Card_Imgs'
+match_cards_lookup = {}
+
+def sync_known_cards():
+    os.chdir(os.path.join(path, img_dir))
+    target_card_ids = [card.id for card in db.collection("%s/data/cards" % APP_PATH).where("isUploaded", "==", True).get()]
+    stored_ids = [f.split("_match")[0] for f in glob.glob("*_match.jpg")]
+    for id in stored_ids:
+        if id not in target_card_ids:
+            os.remove("%s_match.jpg" % id)
+            if id in match_cards_lookup.keys():
+                del match_cards_lookup[id]
+            print("deleted", id)
+    for id in target_card_ids:
+        match_filepath = "%s_match.jpg" % id
+        if id not in stored_ids:
+            try:
+                urllib.request.urlretrieve("https://firebasestorage.googleapis.com/v0/b/firebase-ptw.appspot.com/o/business-card-app%2Fcards%2F" +  id + "_match.jpg?alt=media", match_filepath)
+                print("download", id)
+            except Exception as e:
+                print(e, id)
+        if id not in match_cards_lookup.keys():
+            print("loading", id)
+            load_match_card(id, match_filepath)
+
+def load_match_card(id, filepath):
+    img = cv2.imread(filepath, cv2.IMREAD_GRAYSCALE)
+    match_cards_lookup[id] = {"name": id,"img": img}
+
+sync_known_cards()
 
 ### ---- INITIALIZATION ---- ###
 # Define constants and initialize variables
@@ -47,15 +71,6 @@ font = cv2.FONT_HERSHEY_SIMPLEX
 videostream = VideoStream.VideoStream(
     (IM_WIDTH, IM_HEIGHT), FRAME_RATE, 2, config["DEVICE_NUM"]).start()
 time.sleep(1)  # Give the camera time to warm up
-
-# Load the train rank and suit images
-path = os.path.dirname(os.path.abspath(__file__))
-img_dir = 'Card_Imgs'
-match_cards_lookup = Cards.load_ranks(os.path.join(path, img_dir))
-
-### ---- MAIN LOOP ---- ###
-# The main loop repeatedly grabs frames from the video stream
-# and processes them to find and identify playing cards.
 
 cam_quit = 0  # Loop control variable
 
@@ -172,7 +187,8 @@ while cam_quit == 0:
     if lastConfigUpdate > 10:
         print("update conf %s" % datetime.datetime.now())
         update_config()
-        lastConfigUpdate=0
+        lastConfigUpdate = 0
+        sync_known_cards()
 
     # Poll the keyboard. If 'q' is pressed, exit the main loop.
     key=cv2.waitKey(1) & 0xFF

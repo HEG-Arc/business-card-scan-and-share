@@ -1,0 +1,52 @@
+2018-04-06T11:43:31.614Z - error: restPort (5001) is already in use
+2018-04-06T11:43:31.617Z - error: SUPERVISOR error Error: listen EADDRINUSE 127.0.0.1:5000
+    at Object._errnoException (util.js:1024:11)
+    at _exceptionWithHostPort (util.js:1046:20)
+    at Server.setupListenHandle [as _listen2] (net.js:1351:14)
+    at listenInCluster (net.js:1392:12)
+    at GetAddrInfoReqWrap.doListen [as callback] (net.js:1501:7)
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:97:10)
+2018-04-06T11:43:31.619Z - error: supervisorPort (5000) is already in use
+2018-04-06T11:47:37.469Z - info: User function triggered, starting execution
+2018-04-06T11:47:37.472Z - error: Function returned undefined, expected Promise or value
+2018-04-06T11:47:37.473Z - info: This is not an image.
+Execution took 6 ms, user function completed successfully
+2018-04-06T11:48:11.516Z - error: Function worker killed by signal: SIGTERM
+2018-04-06T11:48:39.621Z - info: User function triggered, starting execution
+2018-04-06T11:48:39.629Z - info: Execution took 9 ms, user function completed successfully
+2018-04-06T11:49:23.653Z - info: User function triggered, starting execution
+2018-04-06T11:49:24.128Z - error: ERROR: { Error: 7 PERMISSION_DENIED: Cloud Vision API has not been used in project firebase-cli before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/vision.googleapis.com/overview?project=firebase-cli then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.
+    at new createStatusError (C:\Users\bfrit\Documents\GitHub\OpenCV-Playing-Card-Detector\firebase\functions\node_modules\grpc\src\client.js:64:15)
+    at C:\Users\bfrit\Documents\GitHub\OpenCV-Playing-Card-Detector\firebase\functions\node_modules\grpc\src\client.js:583:15
+  code: 7,
+  metadata: 
+   Metadata {
+     _internal_repr: 
+      { 'google.rpc.help-bin': [Array],
+        'grpc-status-details-bin': [Array] } },
+  details: 'Cloud Vision API has not been used in project firebase-cli before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/vision.googleapis.com/overview?project=firebase-cli then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.',
+  note: 'Exception occurred in retry method that was not classified as transient' }
+2018-04-06T11:49:24.131Z - info: Execution took 478 ms, user function completed successfully
+2018-04-06T11:52:00.129Z - info: User function triggered, starting execution
+2018-04-06T11:52:00.593Z - error: ERROR: { Error: 7 PERMISSION_DENIED: Cloud Vision API has not been used in project firebase-cli before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/vision.googleapis.com/overview?project=firebase-cli then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.
+    at new createStatusError (C:\Users\bfrit\Documents\GitHub\OpenCV-Playing-Card-Detector\firebase\functions\node_modules\grpc\src\client.js:64:15)
+    at C:\Users\bfrit\Documents\GitHub\OpenCV-Playing-Card-Detector\firebase\functions\node_modules\grpc\src\client.js:583:15
+  code: 7,
+  metadata: 
+   Metadata {
+     _internal_repr: 
+      { 'google.rpc.help-bin': [Array],
+        'grpc-status-details-bin': [Array] } },
+  details: 'Cloud Vision API has not been used in project firebase-cli before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/vision.googleapis.com/overview?project=firebase-cli then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.',
+  note: 'Exception occurred in retry method that was not classified as transient' }
+2018-04-06T11:52:00.597Z - info: Execution took 467 ms, user function completed successfully
+2018-04-06T11:54:07.755Z - info: User function triggered, starting execution
+2018-04-06T11:54:12.154Z - error: ERROR: { Error: 5 NOT_FOUND: No document to update: projects/firebase-ptw/databases/(default)/documents/business-card-app/data/cards/0noGEr6QP1uvs7cu5isl
+    at new createStatusError (C:\Users\bfrit\Documents\GitHub\OpenCV-Playing-Card-Detector\firebase\functions\node_modules\grpc\src\client.js:64:15)
+    at C:\Users\bfrit\Documents\GitHub\OpenCV-Playing-Card-Detector\firebase\functions\node_modules\grpc\src\client.js:583:15
+  code: 5,
+  metadata: Metadata { _internal_repr: {} },
+  details: 'No document to update: projects/firebase-ptw/databases/(default)/documents/business-card-app/data/cards/0noGEr6QP1uvs7cu5isl' }
+2018-04-06T11:54:12.159Z - info: Execution took 4401 ms, user function completed successfully
+2018-04-06T11:54:56.621Z - info: Worker for businessCardExtractText closed due to file changes.
+2018-04-06T11:54:56.641Z - error: Function worker killed by signal: SIGTERM
