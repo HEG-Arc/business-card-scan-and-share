@@ -3,8 +3,8 @@
    :style="{left: `${left}%`, top: `${top}%`, transform}">
     <div class="flipper" :class="{flipped: flipped}">
       <div class="side side-scan" :style="{'background-image': 'url(https://firebasestorage.googleapis.com/v0/b/firebase-ptw.appspot.com/o/business-card-app%2Fcards%2F' + card.id + '.jpg?alt=media)'}">
-        <svg class="ocr-debug" viewBox="0 0 850 550" v-if="card.detections">
-          <path v-for="d in card.detections" :d="d|toPath">
+        <svg class="ocr-debug" viewBox="0 0 850 550" v-if="card.detections && $root.debug">
+          <path v-for="d in card.detections.slice(1)" :d="d|toPath">
             <title>{{d.description}}</title>
           </path>
         </svg>
@@ -22,7 +22,7 @@
           <p style="color:blue">{{npaCity}}</p>
           <p style="color:red">{{person}}</p>
           <p style="color:yellow">{{oraganization}}</p>
-          <span class="flip-button" @click="flipped=!flipped"><i class="ion ion-loop"></i></span>
+          <span v-if="card.isUploaded" class="flip-button" @click="flipped=!flipped"><i class="ion ion-loop"></i></span>
       </div>
     </div>
   </div>
@@ -179,7 +179,6 @@ export default {
   animation-duration: 1s;
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
-  box-shadow: 0px 0px 25px rgba(59, 59, 59, 0.55);
   perspective: 1000px;
 }
 
@@ -195,6 +194,7 @@ export default {
 	position: absolute;
 	top: 0;
 	left: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
 
 .side-data {
@@ -206,7 +206,7 @@ export default {
 .side-scan {
   background-color: #fff;
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: 255px 165px;
 }
 
 .flipped {

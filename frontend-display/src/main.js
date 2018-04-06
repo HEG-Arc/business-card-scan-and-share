@@ -22,4 +22,20 @@ Vue.use(VueFire);
 
 new Vue({
   render: h => h(App),
+  data() {
+    return {
+      gates: []
+    }
+  },
+  firestore() {
+    return {
+      gates: db.collection(`${DB_APP_ROOT}/data/gates`)
+    };
+  },
+  computed: {
+    debug() {
+      console.log( this.gates[0].activeCard)
+      return this.gates[0].activeCard && this.gates[0].activeCard.special === "DEBUG";
+    }
+  }
 }).$mount("#app");
