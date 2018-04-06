@@ -198,9 +198,19 @@ export default {
 }
 
 .side-data {
-  color: green;
-  background-color: white;
+  color: white;
+  background-color: #0089b6;
   transform: rotateY(180deg);
+  background-image: url('../assets/DBL-Network.svg');
+  background-repeat: no-repeat;
+  background-size: 80px;
+  background-position: bottom 10px right 10px;
+}
+
+.side-data h2,
+.side-data h3 {
+  font-weight: normal;
+  text-align: center;
 }
 
 .side-scan {
