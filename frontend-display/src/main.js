@@ -34,7 +34,6 @@ new Vue({
   },
   computed: {
     debug() {
-      console.log( this.gates[0].activeCard)
       return this.gates[0].activeCard && this.gates[0].activeCard.special === "DEBUG";
     }
   }
