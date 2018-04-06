@@ -2,7 +2,7 @@
   <div :class="'card ' + animation"
    :style="{left: `${left}%`, top: `${top}%`, transform}">
     <div class="flipper" :class="{flipped: flipped}">
-      <div class="side side-scan" :style="{'background-image': 'url(https://firebasestorage.googleapis.com/v0/b/firebase-ptw.appspot.com/o/business-card-app%2Fcards%2F' + card.id + '.jpg?alt=media)'}">
+      <div class="side side-scan" :style="{'background-image': card.isUploaded ? 'url(https://firebasestorage.googleapis.com/v0/b/firebase-ptw.appspot.com/o/business-card-app%2Fcards%2F' + card.id + '.jpg?alt=media)' : ''}">
         <svg class="ocr-debug" viewBox="0 0 850 550" v-if="card.detections && $root.debug">
           <path v-for="d in card.detections.slice(1)" :d="d|toPath">
             <title>{{d.description}}</title>
