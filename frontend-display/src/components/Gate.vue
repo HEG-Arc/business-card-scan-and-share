@@ -85,6 +85,7 @@ export default {
   bottom: 0;
   left: 0;
   text-align: center;
+  box-shadow: 0px 0px 25px rgba(59, 59, 59, 0.55);
 }
 .gate-background {
   position: absolute;
