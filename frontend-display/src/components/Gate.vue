@@ -1,5 +1,5 @@
 <template>
-  <div :class="'gate ' + gate.status">
+  <div :class="'gate ' + gate.status + ' ' + (gate.activeCard ? gate.activeCard.special : '')">
     <div class="gate-background" :style="{'background-image': bgImage}"></div>
     <div v-if="gate.status === CLOSED">
       <my-arrows></my-arrows>
@@ -63,7 +63,7 @@ export default {
   },
   computed: {
     bgImage() {
-      if (this.gate.status === OPEN && this.gate.activeCard) {
+      if (this.gate.status === OPEN && this.gate.activeCard && this.gate.activeCard.id) {
         return `url(https://firebasestorage.googleapis.com/v0/b/firebase-ptw.appspot.com/o/business-card-app%2Fcards%2F${
           this.gate.activeCard.id
         }.jpg?alt=media)`;
@@ -87,6 +87,11 @@ export default {
   text-align: center;
   box-shadow: 0px 0px 25px rgba(59, 59, 59, 0.55);
 }
+
+.gate.DEBUG, .gate.DELETE {
+  border: 2px solid red;
+}
+
 .gate-background {
   position: absolute;
   top: 0;
