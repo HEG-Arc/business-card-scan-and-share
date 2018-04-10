@@ -13,6 +13,9 @@ const config = {
   storageBucket: "firebase-ptw.appspot.com",
   messagingSenderId: "281865054216"
 };
+
+window.addEventListener("contextmenu", function(e) { e.preventDefault(); })
+
 firebase.initializeApp(config);
 export const DB_APP_ROOT = "business-card-app";
 export const db = firebase.firestore();
