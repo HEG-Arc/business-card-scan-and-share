@@ -46,16 +46,38 @@ export default {
     return {
       x: 0,
       y: 0,
-      dx: 0,
+      animationSettings: {},
+      speed: 0.2,
+      dx: (Math.random() - 0.5) * 0.2,
+      dy: (Math.random() - 0.5) * 0.2,
       left: parseInt(Math.random() * 80),
       top: parseInt(Math.random() * 80),
       angle: parseInt(Math.random() * 40 - 20),
       dragging: false,
       animation: "",
-      flipped: this.card.isUploaded ? false : true
+      flipped: this.card.isUploaded ? false : true,
+    };
+  },
+  firestore() {
+    return {
+      animationSettings: db.collection(`${DB_APP_ROOT}/data/settings`).doc("animation")
     };
   },
   mounted() {
+    const anim = () => {
+      if (this.animationSettings.autoMove && !this.dragging) {
+        this.left = this.left + this.dx;
+        if (this.left < 0 || this.left > 100) {
+          this.dx = this.dx * -1;
+        }
+        this.top = this.top + this.dy;
+        if (this.top < 0 || this.top > 100) {
+          this.dy = this.dy * -1;
+        }
+      }
+      requestAnimationFrame(anim);
+    }
+    requestAnimationFrame(anim);
     interact(this.$el)
       .draggable({
         // enable inertial throwing
@@ -77,7 +99,6 @@ export default {
         onmove: event => {
           this.x += event.dx;
           this.y += event.dy;
-          this.dx = event.dx;
           this.left =
             parseFloat(this.x) / this.$el.parentElement.offsetWidth * 100;
           this.top =
@@ -87,6 +108,7 @@ export default {
         // call this function on every dragend event
         onend: event => {
           this.dragging = false;
+
           if (event.relatedTarget) {
             this.animation = "zoomOutDown";
             setTimeout(() => {
@@ -153,6 +175,10 @@ export default {
       if(!this.card.isUploaded) {
         this.flipped = true;
       }
+    },
+    'animationSettings.speed': function() {
+      this.dx = (Math.random() - 0.5) * this.animationSettings.speed;
+      this.dy = (Math.random() - 0.5) * this.animationSettings.speed;
     }
   },
   filters: {
