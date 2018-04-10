@@ -162,6 +162,13 @@ export default {
         this.mouseY = e.offsetY;
         this.setDummyPoint();
       });
+      this.c.addEventListener("touchstart", e => {
+        e = e.changedTouches[0];
+        this.mouseDown = true;
+        this.mouseX = e.offsetX;
+        this.mouseY = e.offsetY;
+        this.setDummyPoint();
+      });
 
       this.c.addEventListener("mouseup", () => {
         if (this.mouseDown) {
@@ -177,19 +184,49 @@ export default {
         this.mouseDown = false;
       });
 
+      this.c.addEventListener("touchend", () => {
+        if (this.mouseDown) {
+          this.setDummyPoint();
+        }
+        this.mouseDown = false;
+      });
+
       this.c.addEventListener("mousemove", e => {
         this.moveMouse(e);
 
         if (this.mouseDown) {
-          this.mouseX = this.mouseX;
-          this.mouseY = this.mouseY;
-
           if (!this.options.restrictX) {
             this.mouseX = e.offsetX;
           }
 
           if (!this.options.restrictY) {
             this.mouseY = e.offsetY;
+          }
+
+          var item = {
+            isDummy: false,
+            x: this.mouseX,
+            y: this.mouseY,
+            c: this.color,
+            r: this.size
+          };
+
+          this.history.push(item);
+          this.draw(item, this.history.length);
+        }
+      });
+
+      this.c.addEventListener("touchmove", e => {
+        e = e.changedTouches[0];
+        this.moveMouse(e);
+
+        if (this.mouseDown) {
+          if (!this.options.restrictX) {
+            this.mouseX = e.clientX;
+          }
+
+          if (!this.options.restrictY) {
+            this.mouseY = e.clientY;
           }
 
           var item = {
