@@ -10,7 +10,11 @@
         </svg>
         <span class="flip-button" @click="flipped=!flipped"><i class="ion ion-loop"></i></span>
       </div>
-      <div class="side side-data">
+      <div class="side side-data" :class="card.special">
+          <div v-if="card.special === 'EVENT'">
+            <h2>{{card.name}}</h2>
+            <h3>{{card.date | date}}</h3>
+          </div>
           <div v-if="card.odoo">
             <h2>{{card.odoo.registration.name}}</h2>
             <h3>{{card.odoo.registration.x_company}}</h3>
@@ -30,6 +34,7 @@
 
 <script>
 import interact from "interactjs";
+import moment from "moment";
 import { db, DB_APP_ROOT } from "../main";
 const reEmail = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
 const rePhone = /(.):?([\d +()]{7,18})/g;
@@ -83,13 +88,13 @@ export default {
         onend: event => {
           this.dragging = false;
           if (event.relatedTarget) {
-            // TODO: send MATCH to backend
             this.animation = "zoomOutDown";
             setTimeout(() => {
               if (event.relatedTarget.__vue__.gate.activeCard && event.relatedTarget.__vue__.gate.activeCard.special === 'DELETE') {
                 db.collection(`${DB_APP_ROOT}/data/cards`).doc(this.card.id).delete();
                 // TODO cloud function trigger cleanup storage
               } else {
+                // TODO: send MATCH to backend
                 this.animation = "zoomIn";
                 this.left = parseInt(Math.random() * 40 + 20);
                 this.top = parseInt(Math.random() * 40 + 20);
@@ -144,7 +149,7 @@ export default {
     }
   },
   watch: {
-    'card.isUploaded': function(val) {
+    'card.isUploaded': function() {
       if(!this.card.isUploaded) {
         this.flipped = true;
       }
@@ -160,6 +165,11 @@ export default {
         d.boundingPoly.vertices.map(d => `${d.x} ${d.y}`).join(" L") +
         " Z"
       );
+    },
+    date(value) {
+      if (value) {
+        return moment(String(value)).format('DD MMM, hh:mm')
+      }
     }
   },
   methods: {}
@@ -167,7 +177,8 @@ export default {
 </script>
 
 <style>
-.card, .side {
+.card,
+.side {
   width: 255px;
   height: 165px;
 }
@@ -184,16 +195,15 @@ export default {
 
 .flipper {
   transition: 0.6s;
-	transform-style: preserve-3d;
-
-	position: relative;
+  transform-style: preserve-3d;
+  position: relative;
 }
 
 .side {
   backface-visibility: hidden;
-	position: absolute;
-	top: 0;
-	left: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
 
@@ -205,6 +215,10 @@ export default {
   background-repeat: no-repeat;
   background-size: 80px;
   background-position: bottom 10px right 10px;
+}
+
+.side-data.EVENT {
+  background-color: red;
 }
 
 .side-data h2,
@@ -229,7 +243,6 @@ export default {
   right: 2px;
   cursor: pointer;
 }
-
 
 @keyframes zoomOutDown {
   40% {
