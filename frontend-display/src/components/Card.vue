@@ -19,13 +19,14 @@
             <h2>{{card.odoo.registration.name}}</h2>
             <h3>{{card.odoo.registration.x_company}}</h3>
           </div>
-          <p v-if="card.entities">{{card.entities.map(e => `${e.name} {${e.type}\}`)}} </p>
-          <p>{{card.rawText}}</p>
+          <p style="color:green">{{person}}</p>
           <p style="color:red">{{email}}</p>
           <p style="color:yellow">{{phones}}</p>
           <p style="color:blue">{{npaCity}}</p>
-          <p style="color:red">{{person}}</p>
+
           <p style="color:yellow">{{oraganization}}</p>
+          <p v-if="card.entities">{{card.entities.map(e => `${e.name} {${e.type}\}`)}} </p>
+          <p>{{card.rawText}}</p>
           <span v-if="card.isUploaded" class="flip-button" @click="flipped=!flipped"><i class="ion ion-loop"></i></span>
       </div>
     </div>
@@ -218,6 +219,12 @@ export default {
 }
 
 .side-data.EVENT {
+  color: #0089b6;
+  background-color: white;
+}
+
+.side-data.EXPERT {
+  color: white;
   background-color: red;
 }
 
