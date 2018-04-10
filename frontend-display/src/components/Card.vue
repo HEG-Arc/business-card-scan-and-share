@@ -1,5 +1,5 @@
 <template>
-  <div :class="'card ' + animation"
+  <div class="card" :class="animation + ' ' + (card.odoo && card.odoo.registration ? card.odoo.registration.state : '')"
    :style="{left: `${left}%`, top: `${top}%`, transform}">
     <div class="flipper" :class="{flipped: flipped}">
       <div class="side side-scan" :style="{'background-image': card.isUploaded ? 'url(https://firebasestorage.googleapis.com/v0/b/firebase-ptw.appspot.com/o/business-card-app%2Fcards%2F' + card.id + '.jpg?alt=media)' : ''}">
@@ -67,11 +67,11 @@ export default {
     const anim = () => {
       if (this.animationSettings.autoMove && !this.dragging) {
         this.left = this.left + this.dx;
-        if (this.left < 0 || this.left > 100) {
+        if (this.left < 0 || this.left > 82) {
           this.dx = this.dx * -1;
         }
         this.top = this.top + this.dy;
-        if (this.top < 0 || this.top > 100) {
+        if (this.top < 0 || this.top > 82) {
           this.dy = this.dy * -1;
         }
       }
@@ -207,6 +207,12 @@ export default {
 .side {
   width: 255px;
   height: 165px;
+}
+
+.card.open {
+  transform: scale3d(0.3, 0.3, 0.3) !important;
+  z-index: -1;
+  pointer-events: none;
 }
 
 .card {
