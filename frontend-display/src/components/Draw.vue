@@ -81,6 +81,7 @@
 </template>
 
 <script>
+import { db, DB_APP_ROOT } from "../main";
 // https://codepen.io/Lewitje/pen/MVommB
 export default {
   props: {
@@ -152,6 +153,12 @@ export default {
       this.redraw();
     },
     removeAllHistory() {
+      // save drawing
+      db.collection(`${DB_APP_ROOT}/data/drawings`).add({
+        points: this.history,
+        date: new Date()
+      });
+
       this.history.splice(0);
       this.redraw();
     },
@@ -286,6 +293,7 @@ export default {
       this.history.forEach((item, i) => {
         this.draw(item, i);
       });
+      localStorage.setItem("drawHistory", JSON.stringify(this.history));
     },
     drawBgDots() {
       var gridSize = 50;

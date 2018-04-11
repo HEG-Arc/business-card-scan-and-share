@@ -27,7 +27,7 @@ export default {
       cards: [],
       sortedCards: [],
       gates: [],
-      drawHistory: [],
+      drawHistory: JSON.parse(localStorage.getItem("drawHistory") || "[]"),
       showDraw: false
     };
   },
