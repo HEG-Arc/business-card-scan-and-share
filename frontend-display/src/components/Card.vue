@@ -109,15 +109,16 @@ export default {
         // call this function on every dragend event
         onend: event => {
           this.dragging = false;
-
           if (event.relatedTarget) {
             this.animation = "zoomOutDown";
             setTimeout(() => {
+              // if gate has special delete card
               if (event.relatedTarget.__vue__.gate.activeCard && event.relatedTarget.__vue__.gate.activeCard.special === 'DELETE') {
                 db.collection(`${DB_APP_ROOT}/data/cards`).doc(this.card.id).delete();
-                // TODO cloud function trigger cleanup storage
+                // TODO cloud function trigger cleanup storage?
               } else {
                 // TODO: send MATCH to backend
+                // match can be an event card or a contact
                 this.animation = "zoomIn";
                 this.left = parseInt(Math.random() * 40 + 20);
                 this.top = parseInt(Math.random() * 40 + 20);
@@ -248,11 +249,22 @@ export default {
   background-repeat: no-repeat;
   background-size: 80px;
   background-position: bottom 10px right 10px;
+  padding: 4px;
 }
 
 .side-data.EVENT {
   color: #0089b6;
   background-color: white;
+}
+
+.side-data.EVENT:before {
+  content: 'inscription';
+  background-color: red;
+  color: white;
+  position: absolute;
+  padding: 5px;
+  top: -10px;
+  right: -10px;
 }
 
 .side-data.EXPERT {
