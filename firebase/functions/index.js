@@ -81,8 +81,8 @@ const odoo = new Odoo({
   host: 'economie.digital',
   port: 443,
   database: 'digital',
-  username: functions.config().odoo.username,
-  password: functions.config().odoo.password,
+  username: 'ocr_bc', //functions.config().odoo.username,
+  password: '', //functions.config().odoo.password,
   protocol: 'https'
 });
 
@@ -94,10 +94,11 @@ exports.importRegistrations = functions.https.onRequest((req, res) => {
   return db.collection(`${DB_ROOT}/data/cards`).get().then(snapshot => {
     const cards = [];
     snapshot.forEach((doc) => {
-      cards.push(doc.data())
+      const card = doc.data();
+      card.id = doc.id;
+      cards.push(card);
     });
     const existing = cards.filter(c => c.hasOwnProperty('odoo')).map(c => c.odoo.registration.id);
-    console.log(existing);
 
     // get list from odoo
     return odoo.connect().then(() => {
@@ -108,18 +109,38 @@ exports.importRegistrations = functions.https.onRequest((req, res) => {
           ['event_id', '=', parseInt(req.query.id)]
         ]
       }).then(registrations => {
-        return Promise.all(registrations.filter(r => !existing.includes(r.id)).map(r => {
-          console.log('create', r.id)
-          return db.collection(`${DB_ROOT}/data/cards`).add({
-            isUploaded: false,
-            odoo: {
-              registration: r
-            }
-          });
+        return Promise.all(registrations.map(r => {
+          if (!existing.includes(r.id)) {
+            console.log('create', r.id)
+            return db.collection(`${DB_ROOT}/data/cards`).add({
+              isUploaded: false,
+              odoo: {
+                registration: r
+              }
+            });
+          } else {
+            // update registration state
+            const card = cards.find( c =>  c.odoo && c.odoo.registration &&  c.odoo.registration.id === r.id)
+            console.log('update', r.id);
+            return db.collection(`${DB_ROOT}/data/cards`).doc(card.id).update({
+              'odoo.registration' : r
+            });
+          }
         })).then(() => {
           res.send('done');
         });
       });
     });
   });
+});
+
+exports.importTracks = functions.https.onRequest((req, res) => {
+  if (!req.query.hasOwnProperty('id')) {
+    return "NEED an odoo event id"
+  }
+  // get all tracks
+  // create list of res_partners and their tracks
+  // populate res_partner from db
+  // get list from db
+  // create/replace
 });

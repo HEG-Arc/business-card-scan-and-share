@@ -36,11 +36,30 @@ odoo.update('product.template', productId, {
 async function main() {
     try {
         await odoo.connect();
+        /*
         const res = await odoo.search_read('event.registration', {
             limit: 100,
             fields: ['attendee_partner_id', 'email', 'x_company', 'name', 'state', 'date_open'],
             domain: [['event_id', '=', 1]]
         });
+        */
+       /*
+       odoo.context['registration_force_draft'] = true;
+       const res = await odoo.create('event.registration', {
+            state: 'draft',
+            origin: 'OCR_BC',
+            event_id: 5,
+            name: 'Cédric Gaspoz',
+            email: 'cedric@gaspoz-fleiner.com',
+        });
+*/
+       const res = await odoo.search_read('event.track', {
+        limit: 100,
+        fields: ['speaker_ids', 'name', 'tag_ids'],
+        domain: [['event_id', '=', 1], ['speaker_ids', '!=', false]]
+    });
+
+
         console.log(res);
         console.log(res.length);
         /*
