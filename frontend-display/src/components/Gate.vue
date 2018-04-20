@@ -8,7 +8,7 @@
     <div v-if="gate.status === SCANNING">
       <h2>Identification en cours</h2>
     </div>
-    <div v-if="gate.status === OPEN">
+    <div v-if="gate.status === OPEN && gate.activeCard">
       {{gate.activeCard.id}}
     </div>
   </div>
