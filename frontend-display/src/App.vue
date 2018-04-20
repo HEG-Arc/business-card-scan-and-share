@@ -6,7 +6,7 @@
       <button type="button" id="start-draw"
             v-on:click="showDraw=true"><i class="ion ion-image"></i>
     </button>
-      <my-card v-for="card in sortedCards" :key="card.id" :card="card" @dragstart="moveToTop(card)"></my-card>
+      <my-card v-if="!(card.odoo && card.odoo.registration && (card.odoo.registration.state == 'draft' || card.odoo.registration.state == 'cancel'))" v-for="card in sortedCards" :key="card.id" :card="card" @dragstart="moveToTop(card)"></my-card>
       <my-gate v-for="gate in gates" :key="gate.id" :gate="gate"></my-gate>
       <my-draw v-if="showDraw" :history="drawHistory" @close="showDraw=false"></my-draw>
     </div>
