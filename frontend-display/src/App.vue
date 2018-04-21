@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <div id="dnd" ref="dnd">
-      <my-logo style="transform: rotate(180deg); top: 0; left: 0;"></my-logo>
       <my-logo style="bottom: 0;right: 0;"></my-logo>
       <button type="button" id="start-draw"
             v-on:click="showDraw=true"><i class="ion ion-image"></i>
