@@ -9,6 +9,7 @@
       <my-gate v-for="gate in gates" :key="gate.id" :gate="gate"></my-gate>
       <my-draw v-if="showDraw" :history="drawHistory" @close="showDraw=false"></my-draw>
     </div>
+    <pop-in-text v-if="showCongrats" v-model="showCongrats"></pop-in-text>
   </div>
 </template>
 
@@ -17,6 +18,7 @@ import Card from "@/components/Card";
 import Gate from "@/components/Gate";
 import Logo from "@/components/Logo";
 import Draw from "@/components/Draw";
+import PopInText from "@/components/PopInText";
 import { db, DB_APP_ROOT } from "@/main";
 
 export default {
@@ -27,7 +29,8 @@ export default {
       sortedCards: [],
       gates: [],
       drawHistory: JSON.parse(localStorage.getItem("drawHistory") || "[]"),
-      showDraw: false
+      showDraw: false,
+      showCongrats: false
     };
   },
   firestore() {
@@ -84,7 +87,8 @@ export default {
     "my-card": Card,
     "my-gate": Gate,
     "my-logo": Logo,
-    "my-draw": Draw
+    "my-draw": Draw,
+    PopInText
   }
 };
 </script>
