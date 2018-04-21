@@ -134,7 +134,24 @@ exports.importRegistrations = functions.https.onRequest((req, res) => {
   });
 });
 
-exports.importTracks = functions.https.onRequest((req, res) => {
+exports.importCompanies = functions.https.onRequest((req, res) => {
+  return odoo.connect().then(() => {
+    return odoo.search_read('res.partner', {
+      limit: 100,
+      fields: ['name', 'website', 'image', 'child_ids'],
+      domain: [
+        ['is_company', '=', true]
+      ]
+    }).then(companies => {
+      return Promise.all(companies.map(c => {
+        console.log(c.id);
+        return db.collection(`${DB_ROOT}/data/companies`).doc(`p${c.id}`).set(c);
+      }));
+    });
+  });
+});
+
+exports.importSpeakersAndExpertsFromTracks = functions.https.onRequest((req, res) => {
   if (!req.query.hasOwnProperty('id')) {
     return "NEED an odoo event id"
   }
