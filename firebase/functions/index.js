@@ -104,7 +104,7 @@ exports.importRegistrations = functions.https.onRequest((req, res) => {
     return odoo.connect().then(() => {
       return odoo.search_read('event.registration', {
         limit: 100,
-        fields: ['attendee_partner_id', 'email', 'x_company', 'name', 'state', 'date_open'],
+        fields: ['attendee_partner_id', 'email', 'x_company', 'name', 'state', 'date_open', 'date_closed'],
         domain: [
           ['event_id', '=', parseInt(req.query.id)]
         ]
@@ -117,15 +117,37 @@ exports.importRegistrations = functions.https.onRequest((req, res) => {
               odoo: {
                 registration: r
               }
+            }).then((ref) => {
+              return [ref, r];
             });
           } else {
             // update registration state
             const card = cards.find( c =>  c.odoo && c.odoo.registration &&  c.odoo.registration.id === r.id)
             console.log('update', r.id);
-            return db.collection(`${DB_ROOT}/data/cards`).doc(card.id).update({
+            const ref = db.collection(`${DB_ROOT}/data/cards`).doc(card.id);
+            return ref.update({
               'odoo.registration' : r
+            }).then(() => {
+              return [ref, r];
+            })
+          }
+        }).map(res => {
+          return res.then(([cardRef, registration]) => {
+            if (registration.attendee_partner_id) {
+              odoo.search_read('res.partner', {
+                limit: 1,
+                fields: ['image', 'name', 'parent_id', 'function', 'parent_id_image'],
+                domain: [
+                  ['id', '=', registration.attendee_partner_id[0]]
+                ]
+              }).then(partners => {
+                return cardRef.update({
+                  'odoo.partner': partners[0]
+                });
             });
           }
+            return;
+          });
         })).then(() => {
           res.send('done');
         });
