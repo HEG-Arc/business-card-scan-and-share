@@ -16,6 +16,8 @@
             <h3>{{card.date | date}}</h3>
           </div>
           <div v-if="card.odoo">
+            <img :src="'data:image/jpeg;base64,' + card.odoo.partner.image" v-if="card.odoo.partner && card.odoo.partner.image">
+            <img :src="'data:image/jpeg;base64,' + $root.company(card.odoo.partner.parent_id[0]).image" v-if="card.odoo.partner && card.odoo.partner.parent_id">
             <h2>{{card.odoo.registration.name}}</h2>
             <h3>{{card.odoo.registration.x_company}}</h3>
           </div>

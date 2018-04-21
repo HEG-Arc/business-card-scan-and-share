@@ -27,13 +27,20 @@ new Vue({
   render: h => h(App),
   data() {
     return {
-      gates: []
+      gates: [],
+      companies: []
     }
   },
   firestore() {
     return {
-      gates: db.collection(`${DB_APP_ROOT}/data/gates`)
+      gates: db.collection(`${DB_APP_ROOT}/data/gates`),
+      companies: db.collection(`${DB_APP_ROOT}/data/companies`)
     };
+  },
+  methods: {
+    company(id) {
+      return this.companies.find(c => c.id === `p${id}`) || {};
+    }
   },
   computed: {
     debug() {
