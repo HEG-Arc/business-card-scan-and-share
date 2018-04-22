@@ -46,16 +46,18 @@ export default {
       const e2 = new Event("mousemove");
       e2.offsetX = e.clientX;
       e2.offsetY = e.clientY;
-      if (this.$refs.dnd.nextSibling) {
-        this.$refs.dnd.nextSibling.dispatchEvent(e2);
+      const particlesCanvas = document.querySelector(".particles-js-canvas-el");
+      if (particlesCanvas) {
+        particlesCanvas.dispatchEvent(e2);
       }
     };
     this.$refs.dnd.ontouchmove = (e) => {
       const e2 = new Event("mousemove");
       e2.offsetX = e.changedTouches[0].clientX;
       e2.offsetY = e.changedTouches[0].clientY;
-      if (this.$refs.dnd.nextSibling) {
-        this.$refs.dnd.nextSibling.dispatchEvent(e2);
+      const particlesCanvas = document.querySelector(".particles-js-canvas-el");
+      if (particlesCanvas) {
+        particlesCanvas.dispatchEvent(e2);
       }
     };
   },
