@@ -98,7 +98,7 @@ exports.importRegistrations = functions.https.onRequest((req, res) => {
       card.id = doc.id;
       cards.push(card);
     });
-    const existing = cards.filter(c => c.hasOwnProperty('odoo')).map(c => c.odoo.registration.id);
+    const existing = cards.filter(c => c.hasOwnProperty('odoo') && c.odoo.hasOwnProperty('registration')).map(c => c.odoo.registration.id);
 
     // get list from odoo
     return odoo.connect().then(() => {
@@ -153,6 +153,8 @@ exports.importRegistrations = functions.https.onRequest((req, res) => {
         });
       });
     });
+  }).catch((e) => {
+    console.log(e);
   });
 });
 
@@ -170,6 +172,8 @@ exports.importCompanies = functions.https.onRequest((req, res) => {
         return db.collection(`${DB_ROOT}/data/companies`).doc(`p${c.id}`).set(c);
       }));
     });
+  }).then(() => {
+    res.send('done');
   });
 });
 
@@ -185,7 +189,7 @@ exports.importSpeakersAndExpertsFromTracks = functions.https.onRequest((req, res
       fields: ['speaker_ids', 'name', 'tag_ids'],
       domain: [['event_id', '=', parseInt(req.query.id)], ['speaker_ids', '!=', false]]
     }).then(tracks => {
-  // create list of res_partners and their tracks
+      // create list of res_partners and their tracks
       const partners = {};
       let experts = [];
       tracks.forEach(track => {
@@ -210,7 +214,7 @@ exports.importSpeakersAndExpertsFromTracks = functions.https.onRequest((req, res
           ids: Object.keys(partners).map(id => parseInt(id)),
           fields: ['image', 'name', 'parent_id', 'function']
       }).then(odooPartners => {
-  // get list from db
+        // get list from db
         return db.collection(`${DB_ROOT}/data/cards`).get().then(snapshots => {
           const cards = [];
           snapshots.forEach((doc) => {
