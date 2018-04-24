@@ -183,3 +183,26 @@ exports.importSpeakersAndExpertsFromTracks = functions.https.onRequest((req, res
   // get list from db
   // create/replace
 });
+
+// Listen for any change on cards events
+exports.onNewCardsEventInvite = functions.firestore
+  .document(`${DB_ROOT}/data/cards/{cardId}/events/{eventId}`).onCreate((snap, context) => {
+    return snap.ref.parent.parent.get().then(cardSnap => {
+      const card = cardSnap.data();
+      // invite to event
+      odoo.context['registration_force_draft'] = true;
+      return odoo.create('event.registration', {
+          state: 'draft',
+          origin: 'OCR_BC',
+          event_id: context.params.eventId,
+          name: card.odoo.registration.name,
+          email: card.odoo.registration.email,
+          x_company: card.odoo.registration.x_company,
+          attendee_partner_id: card.odoo.registration.attendee_partner_id
+      }).then(() => {
+        // TODO: odoo mail cron is 5min....
+        return snap.ref.update({state: 'draft'})
+      });
+    });
+    //TODO Odoo callback /webhook to get confirmed regs?
+  });
