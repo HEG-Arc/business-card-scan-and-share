@@ -245,13 +245,14 @@ export default {
   background-size: contain;
 }
 
-.card.open{
+.card.open {
   z-index: -1;
   pointer-events: none;
 }
 
-.card.ope .scale {
+.card.open .scale {
   transform: scale3d(0.3, 0.3, 0.3) !important;
+  perspective: 1000px;
 }
 
 .card {
@@ -261,7 +262,7 @@ export default {
   animation-duration: 1s;
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
-  perspective: 1000px;
+
 }
 
 .flipper {
@@ -295,7 +296,7 @@ export default {
 }
 
 .card.EVENT2 .scale {
-  transform: scale3d(0.6, 0.6, 0.6) translate3d(0, -60px, 0);
+  transform: scale3d(0.6, 0.6, 0.6);
 }
 
 .card.EVENT2 .scale:after {
