@@ -119,7 +119,12 @@ export default {
                 db.collection(`${DB_APP_ROOT}/data/cards`).doc(this.card.id).delete();
                 // TODO cloud function trigger cleanup storage?
               } else {
-                // TODO: send MATCH to backend
+                // TODO send invitation to backend
+
+                db.collection(`${DB_APP_ROOT}/data/welcome_queue`).add({
+                  card: db.collection(`${DB_APP_ROOT}/data/cards`).doc(this.card.id)
+                });
+
                 // match can be an event card or a contact
                 this.animation = "zoomIn";
                 this.left = parseInt(Math.random() * 40 + 20);

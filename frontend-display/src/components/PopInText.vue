@@ -3,7 +3,7 @@
     <animated-star :trigger="trigger" v-for="(i, index) in stars" :key="index"></animated-star>
     <h1 ref="h1">
         Bienvenue!<br/>
-        Boris
+        {{value}}
     </h1>
   </div>
 </template>
@@ -30,8 +30,8 @@ export default {
       this.animateText();
       this.animateBlobs();
       setTimeout(() => {
-        this.$emit("input", false);
-      }, 3000);
+        this.$emit("done");
+      }, 4000);
     },
     animateText() {
       TweenMax.from(this.$refs.h1, 1.2, {

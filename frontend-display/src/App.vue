@@ -13,7 +13,7 @@
       </div>
       <my-draw v-if="showDraw" :history="drawHistory" @close="showDraw=false"></my-draw>
     </div>
-    <pop-in-text v-if="showCongrats" v-model="showCongrats"></pop-in-text>
+    <pop-in-text v-if="showCongrats" v-model="showCongrats" @done="waitNextQueueTick"></pop-in-text>
   </div>
 </template>
 
@@ -25,6 +25,8 @@ import Draw from "@/components/Draw";
 import PopInText from "@/components/PopInText";
 import { db, DB_APP_ROOT } from "@/main";
 
+const dequeueTimeout = 1000;
+
 export default {
   name: "app",
   data() {
@@ -32,15 +34,17 @@ export default {
       cards: [],
       sortedCards: [],
       gates: [],
+      welcomeQueue: [],
       drawHistory: JSON.parse(localStorage.getItem("drawHistory") || "[]"),
       showDraw: false,
-      showCongrats: false
+      showCongrats: false,
+      currentWelcomeRef: ''
     };
   },
   firestore() {
     return {
       cards: db.collection(`${DB_APP_ROOT}/data/cards`),
-      gates: db.collection(`${DB_APP_ROOT}/data/gates`)
+      gates: db.collection(`${DB_APP_ROOT}/data/gates`),
     };
   },
   mounted() {
@@ -64,11 +68,48 @@ export default {
         particlesCanvas.dispatchEvent(e2);
       }
     };
+
+    //listen to welcome and queue theme
+    db.collection(`${DB_APP_ROOT}/data/welcome_queue`).onSnapshot((snapshot) => {
+      snapshot.docChanges.forEach((change) => {
+        if (change.type === "added") {
+          change.doc.data().card.get().then((cardSnap) => {
+            const card = cardSnap.data();
+            card.ref = change.doc.ref;
+            this.welcomeQueue.push(card);
+          })
+        }
+      });
+    });
+
+    // start dequeue loop
+    this.dequeue();
   },
   methods: {
     moveToTop(card) {
       this.sortedCards.splice(this.sortedCards.indexOf(card), 1);
       this.sortedCards.push(card);
+    },
+    waitNextQueueTick() {
+      this.showCongrats = false;
+      if (this.currentWelcomeRef) {
+        this.currentWelcomeRef.delete();
+        this.currentWelcomeRef = '';
+      }
+      setTimeout(this.dequeue, dequeueTimeout);
+    },
+    dequeue() {
+      const welcomeCard = this.welcomeQueue.shift();
+      if (welcomeCard) {
+        this.currentWelcomeRef = welcomeCard.ref;
+        if (welcomeCard.odoo) {
+          this.showCongrats = welcomeCard.odoo.registration ? welcomeCard.odoo.registration.name : welcomeCard.odoo.partner.name;
+        } else {
+          this.showCongrats = welcomeCard.name;
+        }
+      } else {
+        this.waitNextQueueTick();
+      }
     }
   },
   watch: {
