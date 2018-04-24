@@ -136,7 +136,7 @@ exports.importRegistrations = functions.https.onRequest((req, res) => {
             if (registration.attendee_partner_id) {
               odoo.search_read('res.partner', {
                 limit: 1,
-                fields: ['image', 'name', 'parent_id', 'function', 'parent_id_image'],
+                fields: ['image', 'name', 'parent_id', 'function'],
                 domain: [
                   ['id', '=', registration.attendee_partner_id[0]]
                 ]
