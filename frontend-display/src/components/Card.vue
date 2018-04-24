@@ -1,6 +1,7 @@
 <template>
-  <div class="card" :class="animation + ' ' + (card.odoo && card.odoo.registration ? card.odoo.registration.state : '')"
+  <div class="card" :class="animation + ' ' + card.special + ' ' + (card.odoo && card.odoo.registration ? card.odoo.registration.state : '')"
    :style="{left: `${left}%`, top: `${top}%`, transform}">
+   <div class="scale">
     <div class="flipper" :class="{flipped: flipped}">
       <div class="side side-scan" :style="{'background-image': card.isUploaded ? 'url(https://firebasestorage.googleapis.com/v0/b/firebase-ptw.appspot.com/o/business-card-app%2Fcards%2F' + card.id + '.jpg?alt=media)' : ''}">
         <svg class="ocr-debug" viewBox="0 0 850 550" v-if="card.detections && $root.debug">
@@ -10,7 +11,7 @@
         </svg>
         <span class="flip-button" @click="flipped=!flipped"><i class="ion ion-loop"></i></span>
       </div>
-      <div class="side side-data" :class="card.special">
+      <div class="side side-data">
           <div v-if="card.special === 'EVENT'">
             <h2>{{card.name}}</h2>
             <h3>{{card.date | date}}</h3>
@@ -32,6 +33,7 @@
           <span v-if="card.isUploaded" class="flip-button" @click="flipped=!flipped"><i class="ion ion-loop"></i></span>
       </div>
     </div>
+   </div>
   </div>
 </template>
 
@@ -58,7 +60,7 @@ export default {
       angle: parseInt(Math.random() * 40 - 20),
       dragging: false,
       animation: "",
-      flipped: this.card.isUploaded ? false : true,
+      flipped: this.card.isUploaded ? false : true
     };
   },
   firestore() {
@@ -119,11 +121,16 @@ export default {
                 db.collection(`${DB_APP_ROOT}/data/cards`).doc(this.card.id).delete();
                 // TODO cloud function trigger cleanup storage?
               } else {
-                // TODO send invitation to backend
-
-                db.collection(`${DB_APP_ROOT}/data/welcome_queue`).add({
-                  card: db.collection(`${DB_APP_ROOT}/data/cards`).doc(this.card.id)
-                });
+                if(!(this.card.special && this.card.special === 'EXPERT')) {
+                  // TODO customize EVENT ID detection
+                  db.collection(`${DB_APP_ROOT}/data/cards/${this.card.id}/events`).doc('2').set({
+                    state: 'invite'
+                  });
+                  // TODO make something better
+                  db.collection(`${DB_APP_ROOT}/data/cards`).doc(this.card.id).update({
+                    special: 'EVENT2'
+                  });
+                }
 
                 // match can be an event card or a contact
                 this.animation = "zoomIn";
@@ -238,10 +245,13 @@ export default {
   background-size: contain;
 }
 
-.card.ope {
-  transform: scale3d(0.3, 0.3, 0.3) !important;
+.card.open{
   z-index: -1;
   pointer-events: none;
+}
+
+.card.ope .scale {
+  transform: scale3d(0.3, 0.3, 0.3) !important;
 }
 
 .card {
@@ -279,24 +289,23 @@ export default {
   padding: 4px;
 }
 
-.side-data.EVENT {
-  color: #0089b6;
-  background-color: white;
+.card.EXPERT .side-data {
+  color: white;
+  background-color: red;
 }
 
-.side-data.EVENT:before {
-  content: 'inscription';
-  background-color: red;
+.card.EVENT2 .scale {
+  transform: scale3d(0.6, 0.6, 0.6) translate3d(0, -60px, 0);
+}
+
+.card.EVENT2 .scale:after {
+  content: 'DBL#2';
+  background-color: green;
   color: white;
   position: absolute;
   padding: 5px;
   top: -10px;
   right: -10px;
-}
-
-.side-data.EXPERT {
-  color: white;
-  background-color: red;
 }
 
 .side-data h2,
