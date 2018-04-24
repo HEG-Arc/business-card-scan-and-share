@@ -177,11 +177,80 @@ exports.importSpeakersAndExpertsFromTracks = functions.https.onRequest((req, res
   if (!req.query.hasOwnProperty('id')) {
     return "NEED an odoo event id"
   }
-  // get all tracks
+  // get all tracks for event
+  return odoo.connect().then(() => {
+    // TODO would be better to have speacker with their tracks
+    return odoo.search_read('event.track', {
+      limit: 100,
+      fields: ['speaker_ids', 'name', 'tag_ids'],
+      domain: [['event_id', '=', parseInt(req.query.id)], ['speaker_ids', '!=', false]]
+    }).then(tracks => {
   // create list of res_partners and their tracks
-  // populate res_partner from db
+      const partners = {};
+      let experts = [];
+      tracks.forEach(track => {
+        if (track.name === 'Experts') {
+          experts = track.speaker_ids;
+        }
+        track.speaker_ids.forEach(speakerId => {
+          if (!partners.hasOwnProperty(speakerId)) {
+            partners[speakerId] = {
+              id: speakerId,
+              tracks: []
+            };
+          }
+          partners[speakerId].tracks.push({
+            id: track.id,
+            name: track.name
+          });
+        });
+      });
+      // get res_partner from db
+      return odoo.get('res.partner', {
+          ids: Object.keys(partners).map(id => parseInt(id)),
+          fields: ['image', 'name', 'parent_id', 'function']
+      }).then(odooPartners => {
   // get list from db
-  // create/replace
+        return db.collection(`${DB_ROOT}/data/cards`).get().then(snapshots => {
+          const cards = [];
+          snapshots.forEach((doc) => {
+            const card = doc.data();
+            card.id = doc.id;
+            cards.push(card);
+          });
+          const existing = cards.filter(c => c.hasOwnProperty('odoo') && c.odoo.hasOwnProperty('partner')).map(c => c.odoo.partner.id);
+          return Promise.all(odooPartners.map(partner => {
+            // create replace cards
+            if (!existing.includes(partner.id)) {
+              console.log('create', partner.id)
+              return db.collection(`${DB_ROOT}/data/cards`).add({
+                isUploaded: false,
+                special: experts.includes(partner.id) ? 'EXPERT' : '',
+                odoo: {
+                  partner: partner,
+                  tracks: partners[partner.id].tracks
+                }
+              });
+            } else {
+              // update partner state
+              const card = cards.find( c =>  c.odoo && c.odoo.partner &&  c.odoo.partner.id === partner.id);
+              console.log('update', partner.id);
+              const ref = db.collection(`${DB_ROOT}/data/cards`).doc(card.id);
+              return ref.update({
+                'odoo.partner' : partner,
+                'odoo.tracks': partners[partner.id].tracks,
+                'special': experts.includes(partner.id) ? 'EXPERT' : ''
+              });
+            }
+          })).then(() => {
+            res.send('done');
+          });
+        });
+      });
+    }).catch((e) => {
+      return console.log(e);
+    });
+  });
 });
 
 // Listen for any change on cards events
