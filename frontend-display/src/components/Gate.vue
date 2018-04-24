@@ -3,7 +3,7 @@
     <div class="gate-background" :style="{'background-image': bgImage}"></div>
     <div v-if="gate.status === CLOSED">
       <my-arrows></my-arrows>
-      <h2>Scannez votre carte de visite.</h2>
+      <h2>Glissez votre carte ici, pour vous inscrire!</h2>
     </div>
     <div v-if="gate.status === SCANNING">
       <h2>Identification en cours</h2>
@@ -80,15 +80,16 @@ export default {
 <style>
 .gate {
   position: absolute;
-  width: 255px;
-  height: 165px;
+  width: 300px;
+  height: 120px;
   bottom: 0;
   left: 0;
   text-align: center;
   box-shadow: 0px 0px 25px rgba(59, 59, 59, 0.55);
 }
 
-.gate.DEBUG, .gate.DELETE {
+.gate.DEBUG,
+.gate.DELETE {
   border: 2px solid red;
 }
 
@@ -98,14 +99,14 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: -1
+  z-index: -1;
 }
 .gate.CLOSED .gate-background {
   background-color: rgba(255, 255, 255, 0.8);
 }
 .gate.SCANNING .gate-background,
 .gate.OPEN .gate-background {
-  background-color: rgba(255,255,255,0.8);
+  background-color: rgba(255, 255, 255, 0.8);
   background-repeat: no-repeat;
   background-size: contain;
   background-position: 50% 50%;

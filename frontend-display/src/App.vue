@@ -1,12 +1,16 @@
 <template>
   <div id="app">
     <div id="dnd" ref="dnd">
-      <my-logo style="bottom: 0;right: 0;"></my-logo>
+      <!-- <my-logo style="top: 0;left: 0;"></my-logo> -->
       <button type="button" id="start-draw"
             v-on:click="showDraw=true"><i class="ion ion-image"></i>
     </button>
       <my-card v-if="!(card.odoo && card.odoo.registration && (card.odoo.registration.state == 'draft' || card.odoo.registration.state == 'cancel'))" v-for="card in sortedCards" :key="card.id" :card="card" @dragstart="moveToTop(card)"></my-card>
       <my-gate v-for="gate in gates" :key="gate.id" :gate="gate"></my-gate>
+      <div id="subscribe">
+        <h1>Expérience client, adaptation continue et service proactif</h1>
+        <h2>Digital Business Lunsch #2, jeudi 24 mai, 12h</h2>
+      </div>
       <my-draw v-if="showDraw" :history="drawHistory" @close="showDraw=false"></my-draw>
     </div>
     <pop-in-text v-if="showCongrats" v-model="showCongrats"></pop-in-text>
@@ -68,21 +72,27 @@ export default {
     }
   },
   watch: {
-    cards() {
-      const cardIds = this.cards.map(c => c.id);
-      const sortedCardsIds = this.sortedCards.map(c => c.id);
-      // handle adds
-      this.cards.forEach(c => {
-        if (!c.isHidden && !sortedCardsIds.includes(c.id)) {
-          this.sortedCards.push(c);
-        }
-      });
-      // handle removes
-      this.sortedCards.forEach(sc => {
-        if (!cardIds.includes(sc.id)) {
-          this.sortedCards.splice(this.sortedCards.indexOf(sc), 1);
-        }
-      });
+    cards: {
+      deep: true,
+      handler: function() {
+        const cardIds = this.cards.map(c => c.id);
+        const sortedCardsIds = this.sortedCards.map(c => c.id);
+        // handle adds
+        this.cards.forEach(c => {
+          if (!c.isHidden && !sortedCardsIds.includes(c.id)) {
+            this.sortedCards.push(c);
+          }
+        });
+        // handle removes
+        this.sortedCards.forEach(sc => {
+          if (!cardIds.includes(sc.id)) {
+            this.sortedCards.splice(this.sortedCards.indexOf(sc), 1);
+          } else {
+            // replace
+            this.$set(this.sortedCards, this.sortedCards.indexOf(sc), this.cards.find(c => c.id === sc.id));
+          }
+        });
+      }
     }
   },
   components: {
@@ -97,6 +107,21 @@ export default {
 
 <style lang="scss">
 @import url('https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css');
+
+#subscribe {
+  position: absolute;
+  bottom: 0;
+  left: 300px;
+  height: 120px;
+  width: 100%;
+  background-color: #008ac9;
+  font-weight: 300;
+  padding-left: 20px;
+}
+
+#subscribe h2 {
+  color: black;
+}
 
 button {
   appearance: none;
@@ -152,15 +177,15 @@ button {
 }
 
 #start-draw, #start-draw:hover {
-    font-size: 50px;
-    top: calc(50% - 50px);
-    left: calc(50% - 50px);
-    border: 2px solid;
-    border-radius: 50%;
-    height: 100px;
-    width: 100px;
-    background-color: #173160;
-    opacity: 1;
+  font-size: 50px;
+  top: calc(50% - 50px);
+  left: calc(50% - 50px);
+  border: 2px solid;
+  border-radius: 50%;
+  height: 100px;
+  width: 100px;
+  background-color: #173160;
+  opacity: 1;
 }
 
 html,

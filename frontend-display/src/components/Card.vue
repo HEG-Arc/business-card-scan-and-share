@@ -16,10 +16,10 @@
             <h3>{{card.date | date}}</h3>
           </div>
           <div v-if="card.odoo">
-            <img :src="'data:image/jpeg;base64,' + card.odoo.partner.image" v-if="card.odoo.partner && card.odoo.partner.image">
-            <img :src="'data:image/jpeg;base64,' + $root.company(card.odoo.partner.parent_id[0]).image" v-if="card.odoo.partner && card.odoo.partner.parent_id">
-            <h2>{{card.odoo.registration.name}}</h2>
-            <h3>{{card.odoo.registration.x_company}}</h3>
+            <img class="profile-pic" :src="'data:image/jpeg;base64,' + card.odoo.partner.image" v-if="card.odoo.partner && card.odoo.partner.image">
+            <img class="company-pic" :src="'data:image/jpeg;base64,' + $root.company(card.odoo.partner.parent_id[0]).image" v-if="card.odoo.partner && card.odoo.partner.parent_id">
+            <h2>{{card.odoo.registration ? card.odoo.registration.name : card.odoo.partner.name}}</h2>
+            <h3>{{card.odoo.registration ? card.odoo.registration.x_company : card.odoo.partner.function}}</h3>
           </div>
           <p style="color:green">{{person}}</p>
           <p style="color:red">{{email}}</p>
@@ -79,8 +79,8 @@ export default {
         }
       }
       requestAnimationFrame(anim);
-    }
-    requestAnimationFrame(anim);
+    };
+    // requestAnimationFrame(anim);
     interact(this.$el)
       .draggable({
         // enable inertial throwing
@@ -198,7 +198,7 @@ export default {
     },
     date(value) {
       if (value) {
-        return moment(String(value)).format('DD MMM, hh:mm')
+        return moment(String(value)).format('DD MMM, hh:mm');
       }
     }
   },
@@ -213,7 +213,27 @@ export default {
   height: 165px;
 }
 
-.card.open {
+.profile-pic {
+  border-radius: 50%;
+  border: 2px solid white;
+  width: 54px;
+  height: 54px;
+  top: 6px;
+  left: 6px;
+  position: absolute;
+  background-color: white;
+}
+
+.company-pic {
+  max-width: 90px;
+  max-height: 40px;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  background-size: contain;
+}
+
+.card.ope {
   transform: scale3d(0.3, 0.3, 0.3) !important;
   z-index: -1;
   pointer-events: none;
