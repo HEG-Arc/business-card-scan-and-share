@@ -26,7 +26,6 @@
           <p style="color:red">{{email}}</p>
           <p style="color:yellow">{{phones}}</p>
           <p style="color:blue">{{npaCity}}</p>
-
           <p style="color:yellow">{{oraganization}}</p>
           <p v-if="card.entities">{{card.entities.map(e => `${e.name} {${e.type}\}`)}} </p>
           <p>{{card.rawText}}</p>
@@ -82,7 +81,7 @@ export default {
       }
       requestAnimationFrame(anim);
     };
-    // requestAnimationFrame(anim);
+    requestAnimationFrame(anim);
     interact(this.$el)
       .draggable({
         // enable inertial throwing
