@@ -110,10 +110,7 @@ export default {
       if (welcomeCard) {
         this.currentWelcomeRef = welcomeCard.ref;
         if (welcomeCard.odoo) {
-          if (
-            welcomeCard.odoo.registration &&
-            welcomeCard.odoo.registration.state === "done"
-          ) {
+          if (welcomeCard.odoo.registration) {
             const card = this.cards.find(
               c =>
                 c.odoo &&
@@ -121,15 +118,18 @@ export default {
                 c.odoo.registration &&
                 c.odoo.registration.id === welcomeCard.odoo.registration.id
             );
-            if (card) {
+            if (card && card.welcomeDone) {
               card.centered = true;
               this.moveToTop(card);
+              this.waitNextQueueTick();
+            } else {
+              this.showCongrats = welcomeCard.odoo.registration
+                ? welcomeCard.odoo.registration.name
+                : welcomeCard.odoo.partner.name;
+              db.collection(`${DB_APP_ROOT}/data/cards`).doc(card.id).update({
+                welcomeDone: true
+              });
             }
-            this.waitNextQueueTick();
-          } else {
-            this.showCongrats = welcomeCard.odoo.registration
-              ? welcomeCard.odoo.registration.name
-              : welcomeCard.odoo.partner.name;
           }
         } else {
           this.showCongrats = welcomeCard.name;
