@@ -6,11 +6,15 @@
             v-on:click="showDraw=true"><i class="ion ion-image"></i>
     </button>
       <my-card v-if="!(card.odoo && card.odoo.registration && (card.odoo.registration.state == 'draft' || card.odoo.registration.state == 'cancel'))" v-for="card in sortedCards" :key="card.id" :card="card" @dragstart="moveToTop(card)"></my-card>
-      <my-gate v-for="gate in gates" :key="gate.id" :gate="gate"></my-gate>
+      <!--
+        <my-gate v-for="gate in gates" :key="gate.id" :gate="gate"></my-gate>
+      -->
+      <!--
       <div id="subscribe">
         <h1>Expérience client, adaptation continue et service proactif</h1>
         <h2>Digital Business Lunsch #2, jeudi 24 mai, 12h</h2>
       </div>
+      -->
       <my-draw v-if="showDraw" :history="drawHistory" @close="showDraw=false"></my-draw>
     </div>
     <pop-in-text v-if="showCongrats" v-model="showCongrats" @done="waitNextQueueTick"></pop-in-text>
@@ -38,19 +42,19 @@ export default {
       drawHistory: JSON.parse(localStorage.getItem("drawHistory") || "[]"),
       showDraw: false,
       showCongrats: false,
-      currentWelcomeRef: ''
+      currentWelcomeRef: ""
     };
   },
   firestore() {
     return {
       cards: db.collection(`${DB_APP_ROOT}/data/cards`),
-      gates: db.collection(`${DB_APP_ROOT}/data/gates`),
+      gates: db.collection(`${DB_APP_ROOT}/data/gates`)
     };
   },
   mounted() {
     //eslint-disable-next-line
-    particlesJS.load('app', 'particles.json');
-    this.$refs.dnd.onmousemove = (e) => {
+    particlesJS.load("app", "particles.json");
+    this.$refs.dnd.onmousemove = e => {
       const e2 = new Event("mousemove");
       e2.offsetX = e.clientX;
       e2.offsetY = e.clientY;
@@ -59,7 +63,7 @@ export default {
         particlesCanvas.dispatchEvent(e2);
       }
     };
-    this.$refs.dnd.ontouchmove = (e) => {
+    this.$refs.dnd.ontouchmove = e => {
       const e2 = new Event("mousemove");
       e2.offsetX = e.changedTouches[0].clientX;
       e2.offsetY = e.changedTouches[0].clientY;
@@ -70,14 +74,17 @@ export default {
     };
 
     //listen to welcome and queue theme
-    db.collection(`${DB_APP_ROOT}/data/welcome_queue`).onSnapshot((snapshot) => {
-      snapshot.docChanges.forEach((change) => {
+    db.collection(`${DB_APP_ROOT}/data/welcome_queue`).onSnapshot(snapshot => {
+      snapshot.docChanges.forEach(change => {
         if (change.type === "added") {
-          change.doc.data().card.get().then((cardSnap) => {
-            const card = cardSnap.data();
-            card.ref = change.doc.ref;
-            this.welcomeQueue.push(card);
-          })
+          change.doc
+            .data()
+            .card.get()
+            .then(cardSnap => {
+              const card = cardSnap.data();
+              card.ref = change.doc.ref;
+              this.welcomeQueue.push(card);
+            });
         }
       });
     });
@@ -94,7 +101,7 @@ export default {
       this.showCongrats = false;
       if (this.currentWelcomeRef) {
         this.currentWelcomeRef.delete();
-        this.currentWelcomeRef = '';
+        this.currentWelcomeRef = "";
       }
       setTimeout(this.dequeue, dequeueTimeout);
     },
@@ -103,7 +110,27 @@ export default {
       if (welcomeCard) {
         this.currentWelcomeRef = welcomeCard.ref;
         if (welcomeCard.odoo) {
-          this.showCongrats = welcomeCard.odoo.registration ? welcomeCard.odoo.registration.name : welcomeCard.odoo.partner.name;
+          if (
+            welcomeCard.odoo.registration &&
+            welcomeCard.odoo.registration.state === "done"
+          ) {
+            const card = this.cards.find(
+              c =>
+                c.odoo &&
+                c.odoo &&
+                c.odoo.registration &&
+                c.odoo.registration.id === welcomeCard.odoo.registration.id
+            );
+            if (card) {
+              card.centered = true;
+              this.moveToTop(card);
+            }
+            this.waitNextQueueTick();
+          } else {
+            this.showCongrats = welcomeCard.odoo.registration
+              ? welcomeCard.odoo.registration.name
+              : welcomeCard.odoo.partner.name;
+          }
         } else {
           this.showCongrats = welcomeCard.name;
         }
@@ -130,7 +157,11 @@ export default {
             this.sortedCards.splice(this.sortedCards.indexOf(sc), 1);
           } else {
             // replace
-            this.$set(this.sortedCards, this.sortedCards.indexOf(sc), this.cards.find(c => c.id === sc.id));
+            this.$set(
+              this.sortedCards,
+              this.sortedCards.indexOf(sc),
+              this.cards.find(c => c.id === sc.id)
+            );
           }
         });
       }
@@ -147,7 +178,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import url('https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css');
+@import url("https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css");
 
 #subscribe {
   position: absolute;
@@ -217,7 +248,8 @@ button {
   box-sizing: border-box;
 }
 
-#start-draw, #start-draw:hover {
+#start-draw,
+#start-draw:hover {
   font-size: 50px;
   top: calc(50% - 50px);
   left: calc(50% - 50px);
@@ -239,7 +271,7 @@ body {
   overflow: hidden;
 }
 #app {
-  font-family: 'League-Gothic', Helvetica, Arial, sans-serif;
+  font-family: "League-Gothic", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: white;
@@ -260,7 +292,6 @@ body {
   top: 0;
   left: 0;
 }
-
 
 .box {
   width: 400px;

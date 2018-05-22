@@ -69,7 +69,11 @@ export default {
   },
   mounted() {
     const anim = () => {
-      if (this.animationSettings.autoMove && !this.dragging) {
+      if (this.card.centered) {
+        this.left = 45;
+        this.top = 45;
+        this.$set(this.card, 'centered', false);
+      } else if (this.animationSettings.autoMove && !this.dragging) {
         this.left = this.left + this.dx;
         if (this.left < 0 || this.left > 82) {
           this.dx = this.dx * -1;
