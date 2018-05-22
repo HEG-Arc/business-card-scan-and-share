@@ -274,7 +274,7 @@ exports.onNewCardsEventInvite = functions.firestore
           x_company: card.odoo.registration.x_company,
         };
         if (card.odoo.registration.attendee_partner_id) {
-          reg.attendee_partner_id = card.odoo.registration.attendee_partner_id
+          reg.attendee_partner_id = card.odoo.registration.attendee_partner_id[0]
         }
         return odoo.create('event.registration', reg).then(() => {
         // TODO: odoo mail cron is 5min....
